@@ -1,0 +1,30 @@
+services:
+  - docker
+
+branches:
+  only:
+    - master
+    - /^v\d+\.\d+\.\d+.*$/  # version tags
+
+notifications:
+  email:
+    recipients:
+      - arturo.laurenzi@iit.it
+    on_success: never
+    on_failure: always
+    
+
+before_install:
+  - set -e
+  - echo "Travis tag is $TRAVIS_TAG"
+  - ./base/build.bash
+  - if [ ! -z $TRAVIS_TAG ]; then echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; fi
+  - set +e
+
+script: 
+  - if [ -z $TRAVIS_TAG ]; then echo "Not a tag build, will not upload docker registry"; travis_terminate 0; fi
+  - ./base/push.bash
+  - docker tag arturolaurenzi/xbot2_focal_base:latest arturolaurenzi/xbot2_focal_base:$TRAVIS_TAG
+  - docker push arturolaurenzi/xbot2_focal_base:$TRAVIS_TAG
+  - docker tag arturolaurenzi/xbot2_focal_base_nvidia:latest arturolaurenzi/xbot2_focal_base_nvidia:$TRAVIS_TAG
+  - docker push arturolaurenzi/xbot2_focal_base_nvidia:$TRAVIS_TAG
