@@ -1,8 +1,0 @@
-FROM nvidia/opengl:1.0-glvnd-runtime-ubuntu20.04 as nvidia
-FROM xbot2_focal_base:latest
-
-COPY --from=nvidia /usr/local /usr/local
-COPY --from=nvidia /etc/ld.so.conf.d/nvidia.conf /etc/ld.so.conf.d/nvidia.conf
-ENV NVIDIA_VISIBLE_DEVICES=all NVIDIA_DRIVER_CAPABILITIES=all
-
-USER user

@@ -1,0 +1,28 @@
+services:
+  dev:
+    build: .
+    stdin_open: true
+    tty: true 
+    privileged: true
+    entrypoint: /bin/bash
+    restart: always
+    volumes:
+      - /home/alaurenzi/.ssh:/home/user/.ssh
+      - /home/alaurenzi/Qt:/home/user/Qt
+      - /tmp/.X11-unix:/tmp/.X11-unix:rw
+      - ./data:/home/user/data:rw
+    environment:
+      - TERM=xterm-256color
+      - DISPLAY
+      - NVIDIA_DRIVER_CAPABILITIES=all
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+  
+volumes:
+  dev_data:
+

@@ -2,6 +2,8 @@ FROM ros:noetic-robot-focal
 
 ENV rosdistro noetic
 
+ENV ciao miao
+
 # install all dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \ 
     bash-completion \
@@ -27,7 +29,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     qtdeclarative5-dev
 
 # add xbot2 experimental source and keys
-RUN sh -c 'echo "deb http://xbot.cloud/xbot2-experimental/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-experimental.list'
+RUN sh -c 'echo "deb http://xbot.cloud/xbot2/ubuntu/focal /" > /etc/apt/sources.list.d/xbot.list'
 RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
 
 # install dependencies
@@ -60,5 +62,5 @@ RUN bash -c "echo alias notebook_docker=\'jupyter notebook --no-browser --ip=0.0
 # set ownership to user for the whole home folder
 RUN chown -R user .
 
-# change user, copy start script (launches gazebo and gzweb)
+# change user
 USER user

@@ -1,5 +1,0 @@
-docker tag xbot2_focal_base:latest arturolaurenzi/xbot2_focal_base:latest
-docker push arturolaurenzi/xbot2_focal_base:latest
-
-docker tag xbot2_focal_base_nvidia:latest arturolaurenzi/xbot2_focal_base_nvidia:latest
-docker push arturolaurenzi/xbot2_focal_base_nvidia:latest
