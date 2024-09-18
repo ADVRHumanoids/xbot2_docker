@@ -1,9 +1,5 @@
 FROM ros:noetic-robot-focal
 
-ENV rosdistro noetic
-
-ENV ciao miao
-
 # install all dependencies
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \ 
     bash-completion \
@@ -36,12 +32,12 @@ RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \ 
     gazebo11 \ 
     libgazebo11-dev \ 
-    ros-${rosdistro}-interactive-markers \ 
-    ros-${rosdistro}-tf2-eigen \ 
-    ros-${rosdistro}-rviz \ 
-    ros-${rosdistro}-moveit-core \ 
-    ros-${rosdistro}-rosmon \ 
-    ros-${rosdistro}-gazebo-ros-pkgs \ 
+    ros-${ROS_DISTRO}-interactive-markers \ 
+    ros-${ROS_DISTRO}-tf2-eigen \ 
+    ros-${ROS_DISTRO}-rviz \ 
+    ros-${ROS_DISTRO}-moveit-core \ 
+    ros-${ROS_DISTRO}-rosmon \ 
+    ros-${ROS_DISTRO}-gazebo-ros-pkgs \ 
     xbot2_desktop_full
 
 # install python modules for backtrace pretty printer

@@ -1,5 +1,6 @@
 FROM ros:jazzy-perception-noble 
-ENV USER_ID=1000
+
+ARG USER_ID=1000
 
 # delete ubuntu user
 RUN sudo userdel ubuntu
@@ -21,7 +22,9 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-$ROS_DISTRO-desktop-full \
     ros-$ROS_DISTRO-moveit \
     ros-$ROS_DISTRO-velodyne \ 
-    ros-$ROS_DISTRO-velodyne-description
+    ros-$ROS_DISTRO-velodyne-description \
+    ros-$ROS_DISTRO-realsense2-description \
+    ros-$ROS_DISTRO-tf-transformations 
 
 # install useful sw
 RUN sudo apt-get update && sudo apt-get install -y \
@@ -36,7 +39,8 @@ RUN sudo apt-get update && sudo apt-get install -y \
     libboost-test-dev libboost-filesystem-dev libboost-timer-dev libboost-tools-dev  \
     cmake-curses-gui \
     gitg git-gui \
-    clang
+    clang \
+    locate
 
 
 
@@ -53,9 +57,13 @@ RUN ln -s data/.config .config
 # qtcreator alias (must be mounted from docker compose)
 RUN echo alias qtcreator=~/Qt/Tools/QtCreator/bin/qtcreator >> .bashrc
 
+# venv for python
+RUN python3 -m venv --system-site-packages env 
+RUN echo source ~/env/bin/activate >> .bashrc
+
 # pip deps
-RUN sudo pip install hhcm-forest --break-system-packages
-RUN sudo pip install setuptools --break-system-packages
+RUN pip install setuptools
+RUN pip install hhcm-forest
 
 # source forest ws
 RUN echo source ~/data/forest_ws/setup.bash >> .bashrc
