@@ -68,4 +68,7 @@ RUN pip install hhcm-forest
 # source forest ws
 RUN echo source ~/data/forest_ws/setup.bash >> .bashrc
 
+# copy bootstrap
+COPY bootstrap.sh /home/user/bootstrap.sh
+
 CMD ["/bin/bash"]
