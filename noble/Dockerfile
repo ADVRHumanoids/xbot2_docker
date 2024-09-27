@@ -24,7 +24,9 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-$ROS_DISTRO-velodyne \ 
     ros-$ROS_DISTRO-velodyne-description \
     ros-$ROS_DISTRO-realsense2-description \
-    ros-$ROS_DISTRO-tf-transformations 
+    ros-$ROS_DISTRO-tf-transformations \
+    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    && sudo apt-get clean
 
 # install useful sw
 RUN sudo apt-get update && sudo apt-get install -y \
@@ -40,7 +42,10 @@ RUN sudo apt-get update && sudo apt-get install -y \
     cmake-curses-gui \
     gitg git-gui \
     clang \
-    locate
+    locate \
+    gdb \
+    kmod \
+    && sudo apt-get clean
 
 
 
@@ -70,5 +75,8 @@ RUN echo source ~/data/forest_ws/setup.bash >> .bashrc
 
 # copy bootstrap
 COPY bootstrap.sh /home/user/bootstrap.sh
+
+# ros2 configuration (cyclonedds, custom sysctl rules, ...)
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/user/.bashrc
 
 CMD ["/bin/bash"]
