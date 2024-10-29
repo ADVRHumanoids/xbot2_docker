@@ -51,6 +51,7 @@ RUN echo 'user:user' | chpasswd
 WORKDIR /home/user
 
 # bashrc
+RUN cp /etc/skel/.bashrc .
 RUN bash -c "echo source /opt/ros/noetic/setup.bash >> /home/user/.bashrc"
 RUN bash -c "echo source /opt/xbot/setup.sh >> /home/user/.bashrc"
 RUN bash -c "echo alias notebook_docker=\'jupyter notebook --no-browser --ip=0.0.0.0\' >> /home/user/.bashrc"
