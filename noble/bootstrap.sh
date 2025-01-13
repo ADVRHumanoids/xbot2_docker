@@ -1,7 +1,7 @@
 #!/bin/bash
 
 mkdir -p ~/data/.config
-sudo chown -R user:user data
+sudo chown -R user:user ~/data
 mkdir -p ~/data/forest_ws
 cd ~/data/forest_ws
 forest init
