@@ -1,0 +1,27 @@
+name: Build and Push (xbot2_docker-jammy-ROS2)
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    # Run the workflow once a day at midnight UTC
+    - cron: '33 3 * * *'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Run build.bash
+        run: ./jammy/build.bash
+
+      - name: Run push.sh
+        run: ./jammy/push.sh
