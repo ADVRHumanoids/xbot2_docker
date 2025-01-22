@@ -1,49 +1,80 @@
-FROM ros:iron
+FROM ros:humble-perception-jammy 
+
+ARG USER_ID=1000
 
 
-# install all dependencies
-ENV rosdistro iron
-ENV DEBIAN_FRONTEND noninteractive
-
-RUN apt-get update && apt-get install -y \ 
-    bash-completion \
-    build-essential \ 
-    cmake \ 
-    file \ 
-    git \ 
-    python3-pip  \
-    sudo \ 
-    libboost-dev \ 
-    libyaml-cpp-dev \ 
-    cmake-curses-gui \
-    wget \
-    terminator \
-    vim \
-    mercurial \
-    libmatio-dev \
-    imagemagick \ 
-    libtinyxml-dev 
-
-RUN apt-get update && apt-get install -y \ 
-    libgazebo11 
-
-# install python modules for backtrace pretty printer
-RUN pip3 install parse ansicolors notebook hhcm-forest
-
-# create a regular user
-RUN useradd -ms /bin/bash user
+# create a regular user, switch to it, cd to its home
+RUN useradd -u ${USER_ID} -ms /bin/bash user
 RUN adduser user sudo
 RUN echo 'user:user' | chpasswd
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+USER user
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# otherwise autocompletion is broken with apt
+RUN sudo rm /etc/apt/apt.conf.d/docker-clean
+
+# go full ros2
+RUN sudo apt-get update && sudo apt-get install -y \
+    ros-$ROS_DISTRO-desktop-full \
+    ros-$ROS_DISTRO-moveit \
+    ros-$ROS_DISTRO-velodyne \ 
+    ros-$ROS_DISTRO-velodyne-description \
+    ros-$ROS_DISTRO-realsense2-description \
+    ros-$ROS_DISTRO-tf-transformations \
+    ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    && sudo apt-get clean
+
+# install useful sw
+RUN sudo apt-get update && sudo apt-get install -y \
+    vim  \ 
+    wget \
+    bash-completion \
+    terminator \
+    libxcb-cursor-dev \
+    python3-venv python3-pip \
+    openssh-client \
+    gedit \
+    libboost-test-dev libboost-filesystem-dev libboost-timer-dev libboost-tools-dev  \
+    cmake-curses-gui \
+    gitg git-gui \
+    clang \
+    locate \
+    gdb \
+    kmod \
+    && sudo apt-get clean
+
+
 
 WORKDIR /home/user
 
-# bashrc
-RUN bash -c "echo source /opt/ros/noetic/setup.bash >> /home/user/.bashrc"
-RUN bash -c "echo source /opt/xbot/setup.sh >> /home/user/.bashrc"
-RUN bash -c "echo alias notebook_docker=\'jupyter notebook --no-browser --ip=0.0.0.0\' >> /home/user/.bashrc"
+SHELL [ "/bin/bash", "-ic" ]
 
-# set ownership to user for the whole home folder
-# RUN chown -R user .
+# source ros
+RUN echo source /opt/ros/$ROS_DISTRO/setup.bash >> .bashrc
 
-# change user
-USER user
+# symlink .config dir to persistent storage (must be mounted from docker compose)
+RUN ln -s data/.config .config 
+
+# qtcreator alias (must be mounted from docker compose)
+RUN echo alias qtcreator=~/Qt/Tools/QtCreator/bin/qtcreator >> .bashrc
+
+# venv for python
+RUN python3 -m venv --system-site-packages env 
+RUN echo source ~/env/bin/activate >> .bashrc
+
+# pip deps
+RUN pip install setuptools
+RUN pip install hhcm-forest
+
+# source forest ws
+RUN echo source ~/data/forest_ws/setup.bash >> .bashrc
+
+# copy bootstrap
+COPY bootstrap.sh /home/user/bootstrap.sh
+
+# ros2 configuration (cyclonedds, custom sysctl rules, ...)
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/user/.bashrc
+
+CMD ["/bin/bash"]

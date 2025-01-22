@@ -47,7 +47,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     kmod \
     && sudo apt-get clean
 
-
+RUN sudo apt-get update && sudo apt-get install -y file
 
 WORKDIR /home/user
 
