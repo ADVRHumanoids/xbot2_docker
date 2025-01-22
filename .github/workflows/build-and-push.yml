@@ -1,0 +1,23 @@
+name: Build and Push (xbot2_docker-noble-ROS2)
+
+on:
+  push:
+    branches:
+      - master
+  schedule:
+    # Run the workflow once a day at midnight UTC
+    - cron: '33 3 * * *'
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Run build.bash
+        run: ./build.bash
+
+      - name: Run push.sh
+        run: ./push.sh
