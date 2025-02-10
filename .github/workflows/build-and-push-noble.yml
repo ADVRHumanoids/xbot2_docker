@@ -21,7 +21,7 @@ jobs:
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Run build.bash
-        run: ./noble/build.bash
+        run: USER_ID=1000 ./noble/build.bash
 
       - name: Run push.sh
         run: ./noble/push.sh

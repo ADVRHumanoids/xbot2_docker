@@ -47,6 +47,7 @@ RUN pip3 install parse ansicolors notebook hhcm-forest
 RUN useradd -ms /bin/bash user
 RUN adduser user sudo
 RUN echo 'user:user' | chpasswd
+RUN echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
 WORKDIR /home/user
 
