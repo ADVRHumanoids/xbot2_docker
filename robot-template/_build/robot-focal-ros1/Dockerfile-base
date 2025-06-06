@@ -1,0 +1,45 @@
+FROM hhcmhub/xbot2-focal-dev:latest
+
+# Build arguments
+ARG USER_ID=1000
+ARG KERNEL_VER=0
+ARG USER_NAME=user
+ARG ROBOT_NAME=robot
+ARG RECIPES_TAG=main
+
+# env
+ENV PYTHONUNBUFFERED=1
+
+# additional dependencies
+RUN sudo apt update && sudo apt install -y \ 
+	xbot2_desktop_full \
+	ros-noetic-realsense2-description \
+	ros-noetic-realsense2-camera \
+	ros-noetic-theora-image-transport \
+    ros-noetic-moveit
+
+# Ensure we have a standard user setup (user already exists in base image)
+USER root
+
+# Set user ownership for home folder
+RUN chown -R $USER_NAME /home/$USER_NAME
+
+WORKDIR /home/$USER_NAME
+
+# bashrc setup
+COPY --chown=$USER_NAME scripts /home/$USER_NAME/scripts
+RUN cp /etc/skel/.bashrc .bashrc.bak || true
+RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME/.bashrc"
+
+# switch to user
+USER $USER_NAME
+SHELL [ "/bin/bash", "-ic" ]
+
+# configure forest to use https
+ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
+
+# pip deps
+RUN pip install scipy
+
+# build required software (requires valid netrc for auth)
+RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID /bin/bash scripts/build-base.bash
