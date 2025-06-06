@@ -1,4 +1,4 @@
-FROM ${ROBOT_NAME}-${DISTRO:-focal}-${ROS_VERSION:-ros1}-base
+FROM ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
 
 RUN echo "KERNEL_VER = $KERNEL_VER"
 
