@@ -1,5 +1,4 @@
 FROM hhcmhub/xbot2-focal-dev:latest
-
 # Build arguments
 ARG USER_ID=1000
 ARG KERNEL_VER=0

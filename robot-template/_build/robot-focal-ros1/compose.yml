@@ -9,9 +9,8 @@ services:
         - USER_NAME
         - ROBOT_NAME
         - RECIPES_TAG
-        - RECIPES_REPO
-        - ROBOT_PACKAGES
-        - ADDITIONAL_PACKAGES
+        - KERNEL_VER
+
   
   xeno:
     image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-xeno
@@ -23,7 +22,6 @@ services:
         - USER_ID
         - KERNEL_VER
         - USER_NAME
-        - ROBOT_NAME
   
   locomotion:
     image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-locomotion
@@ -35,7 +33,10 @@ services:
         - USER_ID
         - USER_NAME
         - ROBOT_NAME
-      
+        - RECIPES_TAG
+        - BASE_IMAGE_NAME
+        - KERNEL_VER
+
 secrets:
   netrc:
     file: ~/.netrc
