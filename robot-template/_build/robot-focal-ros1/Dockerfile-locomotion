@@ -1,11 +1,12 @@
-FROM ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
+ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
+
+FROM ${BASE_IMAGE_NAME}-base
 
 # Build arguments - these come from the robot config (e.g., kyon-config.env)
 ARG USER_ID=1000
 ARG KERNEL_VER=0
 ARG USER_NAME=user
 ARG ROBOT_NAME=robot
-ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
 ARG RECIPES_TAG=main
 
 # env

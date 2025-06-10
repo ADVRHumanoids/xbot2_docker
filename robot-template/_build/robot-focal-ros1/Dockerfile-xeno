@@ -1,4 +1,7 @@
-FROM ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
+# THIS ARG MUST COME BEFORE FROM
+ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
+
+FROM ${BASE_IMAGE_NAME}-base
 
 RUN echo "KERNEL_VER = $KERNEL_VER"
 
