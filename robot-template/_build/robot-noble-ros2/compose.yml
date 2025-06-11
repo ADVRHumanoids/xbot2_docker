@@ -1,0 +1,48 @@
+services:
+  base:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-base
+    build: 
+      dockerfile: Dockerfile-base
+      secrets: [netrc]
+      args:
+        # Set KERNEL_VER directly to 0
+        KERNEL_VER: 0
+        # These will still be read from your environment
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        ROBOT_NAME: ${ROBOT_NAME}
+        RECIPES_TAG: ${RECIPES_TAG}
+
+  xeno:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-xeno
+    depends_on: [base]
+    build: 
+      dockerfile: Dockerfile-xeno
+      secrets: [netrc]
+      args:
+        # Set KERNEL_VER directly to 0
+        KERNEL_VER: 0
+        # These will still be read from your environment
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+  
+  sim:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-sim
+    depends_on: [base]
+    build: 
+      dockerfile: Dockerfile-sim
+      secrets: [netrc]
+      args:
+        # Set KERNEL_VER directly to 0
+        KERNEL_VER: 0
+        # These will still be read from your environment
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        ROBOT_NAME: ${ROBOT_NAME}
+        RECIPES_TAG: ${RECIPES_TAG}
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+
+secrets:
+  netrc:
+    file: ~/.netrc
