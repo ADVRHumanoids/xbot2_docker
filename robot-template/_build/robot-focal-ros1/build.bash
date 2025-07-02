@@ -9,7 +9,7 @@ export ROBOT_NAME=${ROBOT_NAME:-robot}
 export RECIPES_TAG=${RECIPES_TAG:-main}
 export RECIPES_REPO=${RECIPES_REPO:-git@github.com:advrhumanoids/multidof_recipes.git}
 
-# Docker image naming - matches original kyon pattern
+# Docker image naming - matches original nexus pattern
 export TAGNAME=${TAGNAME:-v1.0.0}
 export BASE_IMAGE_NAME=${BASE_IMAGE_NAME:-${ROBOT_NAME}-cetc-focal-ros1}
 
