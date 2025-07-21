@@ -16,6 +16,7 @@ export BASE_IMAGE_NAME=${BASE_IMAGE_NAME:-${ROBOT_NAME}-cetc-focal-ros1}
 # Parse command line arguments
 BUILD_MODE="local"  # Default to local build
 PUSH_IMAGES="false"  # Default to NOT push (changed from "true")
+NO_CACHE=""  # Default to use cache
 
 while [[ $# -gt 0 ]]; do
     case $1 in
@@ -36,6 +37,10 @@ while [[ $# -gt 0 ]]; do
             PUSH_IMAGES="false"
             shift
             ;;
+        --no-cache)
+            NO_CACHE="--no-cache"
+            shift
+            ;;
         --help|-h)
             echo "Usage: $0 [OPTIONS]"
             echo "Options:"
@@ -43,6 +48,7 @@ while [[ $# -gt 0 ]]; do
             echo "  --pull, --remote Pull images from remote registry"
             echo "  --push           Push images to remote registry after building"
             echo "  --no-push        Don't push images (default, kept for compatibility)"
+            echo "  --no-cache       Build without using Docker cache"
             echo ""
             echo "Environment variables:"
             echo "  USER_NAME, USER_ID, KERNEL_VER, ROBOT_NAME, RECIPES_TAG"
@@ -52,6 +58,8 @@ while [[ $# -gt 0 ]]; do
             echo "  $0                    # Build locally, don't push"
             echo "  $0 --push             # Build locally and push"
             echo "  $0 --pull             # Pull from registry"
+            echo "  $0 --no-cache         # Build locally without cache"
+            echo "  $0 --no-cache --push  # Build without cache and push"
             exit 0
             ;;
         *)
@@ -85,10 +93,11 @@ if [ "$BUILD_MODE" == "remote" ]; then
 else
     echo ""
     echo "Building images locally..."
-    
-    # Build the docker images
-    docker compose build
-    
+    if [ -n "$NO_CACHE" ]; then
+        echo "Building without cache..."
+    fi
+    # Build the docker images with optional --no-cache flag
+    docker compose build $NO_CACHE    
     # Tag the built images (matching original pattern exactly)    
     # Tag the built images
     docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
