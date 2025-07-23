@@ -3,6 +3,8 @@ set -e
 
 cd xbot2_ws
 forest grow circulo9_xbot2_device -j8 -v -m xeno --clone-depth 1
+forest grow ecat_master -j8 -v -m xeno --clone-depth 1
+
 
 # rm build to save space
 rm -rf build
