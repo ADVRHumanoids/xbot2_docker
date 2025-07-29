@@ -1,4 +1,4 @@
-name: Build and Push (xbot2_docker-jammy-ROS2)
+name: Build and Push (xbot2_docker-focal-ROS1)
 
 on:
   push:
@@ -25,9 +25,9 @@ jobs:
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Run build.bash
-        run: USER_ID=1000 ./jammy/build.bash
-        if: contains(env.COMMIT_MESSAGE, '[build jammy]')
+        run: USER_ID=1000 ./focal/build.bash
+        if: contains(env.COMMIT_MESSAGE, '[build focal]')
 
       - name: Run push.sh
-        run: ./jammy/push.sh
-        if: startsWith(github.ref, 'refs/tags/v') && contains(env.COMMIT_MESSAGE, '[build jammy]')
+        run: ./focal/push.sh
+        if: startsWith(github.ref, 'refs/tags/v') && contains(env.COMMIT_MESSAGE, '[build focal]')

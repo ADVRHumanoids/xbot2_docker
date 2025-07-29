@@ -2,11 +2,10 @@ name: Build and Push (xbot2_docker-noble-ROS2)
 
 on:
   push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
     branches:
       - master
-  schedule:
-    # Run the workflow once a day at midnight UTC
-    - cron: '33 3 * * *'
 
 jobs:
   build-and-push:
@@ -16,12 +15,19 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Get commit message
+        run: |
+          COMMIT_MSG="$(git log -1 --pretty=%B)"
+          echo "COMMIT_MESSAGE=$COMMIT_MSG" >> $GITHUB_ENV
+
       - name: Log in to Docker Hub
         run: |
           echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
 
       - name: Run build.bash
         run: USER_ID=1000 ./noble/build.bash
+        if: contains(env.COMMIT_MESSAGE, '[build noble]')
 
       - name: Run push.sh
         run: ./noble/push.sh
+        if: startsWith(github.ref, 'refs/tags/v') && contains(env.COMMIT_MESSAGE, '[build noble]')
