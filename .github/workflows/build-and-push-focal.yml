@@ -15,6 +15,10 @@ jobs:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
+      - name: Print info
+        run: |
+          echo "Github ref: ${{ github.ref }}"
+
       - name: Get commit message
         run: |
           COMMIT_MSG="$(git log -1 --pretty=%B)"
