@@ -1,0 +1,66 @@
+FROM hhcmhub/xbot2-focal-dev:latest
+# Build arguments
+ARG USER_ID=1000
+ARG KERNEL_VER=0
+ARG USER_NAME=user
+ARG ROBOT_NAME=robot
+ARG RECIPES_TAG=main
+ARG ROBOT_PACKAGES=""
+ARG ADDITIONAL_PACKAGES=""
+# env
+ENV PYTHONUNBUFFERED=1
+
+# additional dependencies
+# Ensure we have a standard user setup (user already exists in base image)
+USER root
+RUN \
+    # 1. Update lists and ensure helper tools are present
+    apt-get update && \
+    apt-get install -y --no-install-recommends curl gnupg2 && \
+    \
+    # 1. Update lists and ensure helper tools are present
+    # 3. Remove old ROS repository files
+    # 2. Purge ALL old ROS and XBot2 packages to ensure a clean slate
+    apt-get purge -y 'xbot2-*' && \
+    apt-get autoremove -y && \
+    rm -f /etc/apt/sources.list.d/ros*.list && \
+    \
+    # 4. Add the official ROS GPG key and repository source
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.asc | apt-key add - && \
+    echo "deb http://packages.ros.org/ros/ubuntu focal main" > /etc/apt/sources.list.d/ros-latest.list && \
+    \
+    # 5. Update apt lists again now that the correct repository is configured
+    apt update && \
+    # 6. Install the packages you need
+    apt install -o Acquire::Retries=3 -y --no-install-recommends \
+    xbot2_desktop_full \
+    ros-noetic-realsense2-description \
+    ros-noetic-realsense2-camera \
+    ros-noetic-theora-image-transport \
+    ros-noetic-moveit && \
+    # 7. Clean up to keep the final image size small
+    rm -rf /var/lib/apt/lists/*
+
+
+# Set user ownership for home folder
+RUN chown -R $USER_NAME /home/$USER_NAME
+
+WORKDIR /home/$USER_NAME
+
+# bashrc setup
+COPY --chown=$USER_NAME scripts /home/$USER_NAME/scripts
+RUN cp /etc/skel/.bashrc .bashrc.bak || true
+RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME/.bashrc"
+
+# switch to user
+USER $USER_NAME
+SHELL [ "/bin/bash", "-ic" ]
+
+# configure forest to use https
+ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
+
+# pip deps
+RUN pip install scipy
+
+# build required software (requires valid netrc for auth)   
+RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID /bin/bash scripts/build-base.bash

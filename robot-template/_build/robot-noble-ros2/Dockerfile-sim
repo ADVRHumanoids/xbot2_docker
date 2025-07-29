@@ -1,0 +1,19 @@
+ARG BASE_IMAGE_NAME=robot-cetc-noble-ros2
+
+FROM ${BASE_IMAGE_NAME}-base
+# get kernel version
+ARG USER_ID=1000
+ARG KERNEL_VER=0
+ARG USER_NAME=user
+ARG ROBOT_NAME=robot
+ARG RECIPES_TAG=main
+
+ENV PYTHONUNBUFFERED=1
+
+# install deps
+RUN sudo apt update && sudo apt install -y libglfw3-dev
+
+# build xbot2_mujoco
+# FIX: Activate the virtual environment before running forest
+RUN . /home/user/venv/bin/activate && \
+    cd xbot2_ws && forest grow xbot2_mujoco -j 20 -v

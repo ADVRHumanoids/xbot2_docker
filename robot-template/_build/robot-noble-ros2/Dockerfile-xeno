@@ -1,0 +1,37 @@
+ARG BASE_IMAGE_NAME=robot-cetc-noble-ros2
+
+FROM ${BASE_IMAGE_NAME}-base
+
+RUN echo "KERNEL_VER = $KERNEL_VER"
+
+# get kernel version
+ARG USER_ID=1000
+ARG KERNEL_VER=0
+ARG USER_NAME=user
+ARG ROBOT_NAME=robot
+ARG RECIPES_TAG=main
+# ENV PYTHONUNBUFFERED=1
+
+# remove xbot2
+RUN sudo apt remove -y xbot2 && sudo apt install -y libtool pkg-config
+
+# build xenomai
+# FIX #1: Activate venv for the 'forest' command
+RUN . /home/$USER_NAME/venv/bin/activate && \
+    cd xbot2_ws && forest grow Xenomai -j 20 --clone-depth 1 -v -m linuxv$KERNEL_VER
+
+# FIX: Remove conflicting file and create the .config directory
+RUN rm -f /home/$USER_NAME/.config && mkdir -p /home/$USER_NAME/.config
+
+# build required software (requires valid netrc for auth)
+# FIX #2: Activate venv for the script that uses 'forest'
+RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID \
+    . /home/$USER_NAME/venv/bin/activate && \
+    /bin/bash scripts/build-xeno.bash
+
+# xenomai from regular user
+RUN sudo groupadd -f xenomai -g 1001
+RUN sudo usermod -a -G xenomai $USER_NAME
+
+# tty from regular user
+RUN sudo usermod -a -G dialout $USER_NAME

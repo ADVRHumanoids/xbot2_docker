@@ -1,0 +1,49 @@
+services:
+  base:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
+    build: 
+      dockerfile: Dockerfile-base
+      secrets: [netrc]
+      args:
+        - USER_ID
+        - USER_NAME
+        - ROBOT_NAME
+        - RECIPES_TAG
+        - KERNEL_VER
+        - BASE_IMAGE_NAME
+        - ROBOT_PACKAGES
+        - ADDITIONAL_PACKAGES    
+
+  xeno:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-xeno
+    depends_on: [base]
+    build: 
+      dockerfile: Dockerfile-xeno
+      secrets: [netrc]
+      args:
+        - USER_ID
+        - USER_NAME
+        - ROBOT_NAME
+        - RECIPES_TAG
+        - BASE_IMAGE_NAME
+        - KERNEL_VER
+        - ROBOT_PACKAGES
+        - ADDITIONAL_PACKAGES     
+  locomotion:
+    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-locomotion
+    depends_on: [base]
+    build: 
+      dockerfile: Dockerfile-locomotion
+      secrets: [netrc]
+      args:
+        - USER_ID
+        - USER_NAME
+        - ROBOT_NAME
+        - RECIPES_TAG
+        - BASE_IMAGE_NAME
+        - KERNEL_VER
+        - ROBOT_PACKAGES
+        - ADDITIONAL_PACKAGES    
+secrets:
+  netrc:
+    file: ~/.netrc

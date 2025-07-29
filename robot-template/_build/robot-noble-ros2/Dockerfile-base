@@ -1,0 +1,52 @@
+FROM hhcmhub/xbot2-noble-dev
+
+ARG USER_ID=1000
+ARG KERNEL_VER=0
+ARG USER_NAME=user
+ARG ROBOT_NAME=robot
+ARG RECIPES_TAG=main
+
+
+# env
+ENV PYTHONUNBUFFERED=1
+
+# additional dependencies
+RUN sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list' && \
+    wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
+
+# FIX 1: Add the new ROS GPG key
+RUN sudo apt-get update && sudo apt-get install -y curl && \
+    sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
+
+RUN sudo apt update && sudo apt install -y xbot2_desktop_full ros-$ROS_DISTRO-realsense2-description
+
+
+# add kyon user
+USER root
+
+RUN echo "$USER_NAME:user" | chpasswd
+
+WORKDIR /home/$USER_NAME
+
+# bashrc
+COPY --chown=$USER_NAME scripts /home/$USER_NAME/scripts
+RUN cp /etc/skel/.bashrc .
+RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME/.bashrc"
+
+# venv
+RUN python3 -m venv --system-site-packages venv 
+
+# set ownership to user for the whole home folder
+RUN chown -R $USER_NAME .
+
+# switch to user
+USER $USER_NAME
+SHELL [ "/bin/bash", "-ic" ]
+
+# configure forest to use https
+ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
+
+# build required software (requires valid netrc for auth)
+# FIX 2: Activate venv before running build script
+RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID \
+    . /home/$USER_NAME/venv/bin/activate && /bin/bash scripts/build-base.bash
