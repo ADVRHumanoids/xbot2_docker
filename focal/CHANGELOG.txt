@@ -1,1 +1,2 @@
 v1.0.0: first tag
+v1.0.1: rm notebook from pip

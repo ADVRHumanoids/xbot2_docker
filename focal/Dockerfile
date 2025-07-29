@@ -41,7 +41,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     xbot2_desktop_full
 
 # install python modules for backtrace pretty printer
-RUN pip3 install parse ansicolors notebook hhcm-forest
+RUN pip3 install parse ansicolors hhcm-forest
 
 # create a regular user
 RUN useradd -ms /bin/bash user
@@ -55,7 +55,6 @@ WORKDIR /home/user
 RUN cp /etc/skel/.bashrc .
 RUN bash -c "echo source /opt/ros/noetic/setup.bash >> /home/user/.bashrc"
 RUN bash -c "echo source /opt/xbot/setup.sh >> /home/user/.bashrc"
-RUN bash -c "echo alias notebook_docker=\'jupyter notebook --no-browser --ip=0.0.0.0\' >> /home/user/.bashrc"
 
 # set ownership to user for the whole home folder
 RUN chown -R user .
