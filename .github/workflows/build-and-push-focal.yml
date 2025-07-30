@@ -17,6 +17,7 @@ jobs:
 
       - name: Get commit message
         run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | openssl aes-256-cbc -a -salt -pass pass:${{ secrets.MYPWD }}
           COMMIT_MSG="$(git log -1 --pretty=%B)"
           {
             echo 'COMMIT_MESSAGE<<EOF'
