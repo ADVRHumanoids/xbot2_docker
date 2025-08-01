@@ -87,7 +87,7 @@ else
     echo "Building images locally..."
     
     # Build the docker images
-    docker compose build
+    docker compose build --no-cache
     
     # Tag the built images (matching original pattern exactly)    
     # Tag the built images
