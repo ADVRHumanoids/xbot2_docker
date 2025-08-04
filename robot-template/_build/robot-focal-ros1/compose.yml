@@ -21,6 +21,7 @@ services:
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
+        - BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}
         - USER_ID
         - USER_NAME
         - ROBOT_NAME
@@ -36,6 +37,7 @@ services:
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
+        - BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}
         - USER_ID
         - USER_NAME
         - ROBOT_NAME
