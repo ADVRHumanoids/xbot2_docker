@@ -1,51 +1,51 @@
 services:
   base:
     image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
-    build: 
+    build:
       dockerfile: Dockerfile-base
       secrets: [netrc]
       args:
-        - USER_ID
-        - USER_NAME
-        - ROBOT_NAME
-        - RECIPES_TAG
-        - KERNEL_VER
-        - BASE_IMAGE_NAME
-        - ROBOT_PACKAGES
-        - ADDITIONAL_PACKAGES    
-
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        ROBOT_NAME: ${ROBOT_NAME}
+        RECIPES_TAG: ${RECIPES_TAG}
+        KERNEL_VER: ${KERNEL_VER}
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+        ROBOT_PACKAGES: ${ROBOT_PACKAGES}
+        ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
+       
   xeno:
     image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-xeno
     depends_on: [base]
-    build: 
+    build:
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
-        - BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}
-        - USER_ID
-        - USER_NAME
-        - ROBOT_NAME
-        - RECIPES_TAG
-        - BASE_IMAGE_NAME
-        - KERNEL_VER
-        - ROBOT_PACKAGES
-        - ADDITIONAL_PACKAGES     
+        BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}  # This overrides the default
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        ROBOT_NAME: ${ROBOT_NAME}
+        RECIPES_TAG: ${RECIPES_TAG}
+        KERNEL_VER: ${KERNEL_VER}
+        ROBOT_PACKAGES: ${ROBOT_PACKAGES}
+        ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
+       
   locomotion:
     image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-locomotion
     depends_on: [base]
-    build: 
+    build:
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
-        - BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}
-        - USER_ID
-        - USER_NAME
-        - ROBOT_NAME
-        - RECIPES_TAG
-        - BASE_IMAGE_NAME
-        - KERNEL_VER
-        - ROBOT_PACKAGES
-        - ADDITIONAL_PACKAGES    
+        BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}  # This overrides the default
+        USER_ID: ${USER_ID}
+        USER_NAME: ${USER_NAME}
+        ROBOT_NAME: ${ROBOT_NAME}
+        RECIPES_TAG: ${RECIPES_TAG}
+        KERNEL_VER: ${KERNEL_VER}
+        ROBOT_PACKAGES: ${ROBOT_PACKAGES}
+        ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
+
 secrets:
   netrc:
     file: ~/.netrc
