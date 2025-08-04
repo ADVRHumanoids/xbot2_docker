@@ -21,8 +21,8 @@ RUN \
     # 1. Update lists and ensure helper tools are present
     # 3. Remove old ROS repository files
     # 2. Purge ALL old ROS and XBot2 packages to ensure a clean slate
-    # apt-get purge -y 'xbot2-*' && \
-    # apt-get autoremove -y && \
+    apt-get purge -y 'xbot2-*' && \
+    apt-get autoremove -y && \
     # for now there is a problem on destktop full study the porblem
     rm -f /etc/apt/sources.list.d/ros*.list && \
     \

@@ -23,7 +23,7 @@ RUN apt-get update && apt-get install -y sudo build-essential gfortran \
 
 # upgrade pip and install the latest version of NumPy 
 # only required for ROS noetic
-RUN pip install numpy scipy numpy_ros matplotlib colorama Cython networkx pygraphviz
+RUN pip install numpy scipy matplotlib colorama Cython networkx pygraphviz
     
 USER ${USER_NAME}
 
