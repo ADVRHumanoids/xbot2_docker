@@ -20,6 +20,8 @@ services:
     build:
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
+      additional_contexts:
+        - base=docker-image://${BASE_IMAGE_NAME}-base:latest
       args:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
         USER_ID: ${USER_ID}
@@ -36,6 +38,8 @@ services:
     build:
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
+      additional_contexts:
+        - base=docker-image://${BASE_IMAGE_NAME}-base:latest
       args:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
         USER_ID: ${USER_ID}
