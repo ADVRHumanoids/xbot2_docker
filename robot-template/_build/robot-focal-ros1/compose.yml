@@ -1,7 +1,8 @@
 services:
   base:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-base
+    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:${TAGNAME}
     build:
+      context: .
       dockerfile: Dockerfile-base
       secrets: [netrc]
       args:
@@ -13,27 +14,35 @@ services:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
+      tags:
+        - ${BASE_IMAGE_NAME}-base:latest
+        - ${BASE_IMAGE_NAME}-base:${TAGNAME}
        
+
   xeno:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-xeno
-    depends_on: [base]
+    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
     build:
+      context: .
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
-        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+        KERNEL_VER: ${KERNEL_VER}
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
-        ROBOT_NAME: ${ROBOT_NAME}
-        RECIPES_TAG: ${RECIPES_TAG}
-        KERNEL_VER: ${KERNEL_VER}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-       
+        RECIPES_TAG: ${RECIPES_TAG}
+      tags:
+        - ${BASE_IMAGE_NAME}-xeno:latest
+        - ${BASE_IMAGE_NAME}-xeno:${TAGNAME}
+    depends_on:
+      - base
+
   locomotion:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-focal-ros1}-locomotion
-    depends_on: [base]
+    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     build:
+      context: .
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
@@ -45,7 +54,11 @@ services:
         KERNEL_VER: ${KERNEL_VER}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-
+      tags:
+        - ${BASE_IMAGE_NAME}-locomotion:latest
+        - ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
+    depends_on:
+      - base
 secrets:
   netrc:
     file: ~/.netrc

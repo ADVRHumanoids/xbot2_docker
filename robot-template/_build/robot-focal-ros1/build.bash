@@ -101,9 +101,8 @@ else
     docker compose build $NO_CACHE    
     # Tag the built images (matching original pattern exactly)    
     # Tag the built images
-    docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
-    docker tag ${BASE_IMAGE_NAME}-xeno hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
-    docker tag ${BASE_IMAGE_NAME}-locomotion hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
+    echo "Images built successfully!"
+
     
     if [ "$PUSH_IMAGES" == "true" ]; then
         echo ""
