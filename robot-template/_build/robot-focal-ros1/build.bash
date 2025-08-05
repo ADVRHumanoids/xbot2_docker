@@ -97,23 +97,15 @@ else
         echo "Building without cache..."
     fi
     # Build the docker images with optional --no-cache flag
-    
-    # Build base image first
     docker compose build base $NO_CACHE
-    
-    # Tag base image with localhost prefix for local resolution
-    docker tag ${BASE_IMAGE_NAME}-base localhost/${BASE_IMAGE_NAME}-base:latest
-    
-    # Now build dependent images
-    # Make sure Dockerfile-xeno uses FROM localhost/${BASE_IMAGE_NAME}-base:latest
     docker compose build xeno $NO_CACHE    
     docker compose build locomotion $NO_CACHE    
-    
-    # Tag the built images for registry
+    # Tag the built images (matching original pattern exactly)    
+    # Tag the built images
     docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
     docker tag ${BASE_IMAGE_NAME}-xeno hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
     docker tag ${BASE_IMAGE_NAME}-locomotion hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
-
+    
     if [ "$PUSH_IMAGES" == "true" ]; then
         echo ""
         echo "Pushing images to remote registry..."

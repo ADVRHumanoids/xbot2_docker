@@ -21,7 +21,7 @@ services:
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
-        BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}  # This overrides the default
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
         ROBOT_NAME: ${ROBOT_NAME}
@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
-        BASE_IMAGE_NAME: localhost/${BASE_IMAGE_NAME}  # This overrides the default
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
         ROBOT_NAME: ${ROBOT_NAME}
