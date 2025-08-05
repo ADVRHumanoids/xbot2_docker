@@ -21,6 +21,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
     libtinyxml-dev \ 
     qt5-default \ 
     qttools5-dev \ 
+    libqt5charts5-dev \
     qtquickcontrols2-5-dev \ 
     qtdeclarative5-dev
 
