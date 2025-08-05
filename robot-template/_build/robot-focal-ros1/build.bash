@@ -97,9 +97,8 @@ else
         echo "Building without cache..."
     fi
     # Build the docker images with optional --no-cache flag
-    docker compose build base $NO_CACHE
-    docker compose build xeno $NO_CACHE    
-    docker compose build locomotion $NO_CACHE    
+
+    docker compose build $NO_CACHE    
     # Tag the built images (matching original pattern exactly)    
     # Tag the built images
     docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
