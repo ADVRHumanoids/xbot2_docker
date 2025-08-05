@@ -15,7 +15,6 @@ services:
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
       tags:
-        - ${BASE_IMAGE_NAME}-base:latest
         - ${BASE_IMAGE_NAME}-base:${TAGNAME}
        
 
@@ -26,7 +25,9 @@ services:
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+        TAGNAME: ${TAGNAME}
         KERNEL_VER: ${KERNEL_VER}
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
@@ -34,7 +35,6 @@ services:
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
         RECIPES_TAG: ${RECIPES_TAG}
       tags:
-        - ${BASE_IMAGE_NAME}-xeno:latest
         - ${BASE_IMAGE_NAME}-xeno:${TAGNAME}
     depends_on:
       - base
@@ -46,7 +46,9 @@ services:
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
-        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
+        DOCKER_REGISTRY: ${DOCKER_REGISTRY}
+        BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+        TAGNAME: ${TAGNAME}
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
         ROBOT_NAME: ${ROBOT_NAME}
@@ -55,7 +57,6 @@ services:
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
       tags:
-        - ${BASE_IMAGE_NAME}-locomotion:latest
         - ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     depends_on:
       - base

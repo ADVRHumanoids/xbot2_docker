@@ -1,6 +1,9 @@
+ARG DOCKER_REGISTRY=hhcmhub
 ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
+ARG TAGNAME=latest
 
-FROM ${BASE_IMAGE_NAME}-base
+FROM ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:${TAGNAME}
+
 
 # Build arguments - these come from the robot config (e.g., kyon-config.env)
 ARG USER_ID=1000
