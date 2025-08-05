@@ -1,6 +1,6 @@
 services:
   base:
-    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:${TAGNAME}
+    image: ${BASE_IMAGE_NAME}-base:${TAGNAME}
     build:
       context: .
       dockerfile: Dockerfile-base
@@ -17,7 +17,7 @@ services:
        
 
   xeno:
-    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
+    image: ${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
     build:
       context: .
       dockerfile: Dockerfile-xeno
@@ -34,7 +34,7 @@ services:
       - base
 
   locomotion:
-    image: ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
+    image: ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     build:
       context: .
       dockerfile: Dockerfile-locomotion
