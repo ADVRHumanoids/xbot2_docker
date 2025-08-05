@@ -2,3 +2,4 @@ v1.0.0: first tag
 v1.0.1: rm notebook from pip
 v1.0.2: debugging ci
 v1.0.3: push latest tag too
+v1.0.4: push latest tag too
