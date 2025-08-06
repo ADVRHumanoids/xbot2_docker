@@ -5,7 +5,6 @@ ARG KERNEL_VER=0
 ARG USER_NAME=user
 ARG ROBOT_NAME=robot
 ARG RECIPES_TAG=main
-ARG RECIPES_REPO=git@github.com:advrhumanoids/multidof_recipes.git
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 # env
@@ -24,7 +23,6 @@ RUN \
     # 2. Purge ALL old ROS and XBot2 packages to ensure a clean slate
     apt-get purge -y 'xbot2-*' && \
     apt-get autoremove -y && \
-    # for now there is a problem on destktop full study the porblem
     rm -f /etc/apt/sources.list.d/ros*.list && \
     \
     # 4. Add the official ROS GPG key and repository source
@@ -64,5 +62,5 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 # pip deps
 RUN pip install scipy
 
-# build required software (requires valid netrc for auth)   
+# build required software (requires valid netrc for auth)
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID /bin/bash scripts/build-base.bash
