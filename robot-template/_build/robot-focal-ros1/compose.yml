@@ -14,7 +14,7 @@ services:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-       
+        RECIPES_REPO: ${RECIPES_REPO}
 
   xeno:
     image: ${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
@@ -36,7 +36,6 @@ services:
   locomotion:
     image: ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     build:
-      context: .
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:

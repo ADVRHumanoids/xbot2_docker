@@ -5,6 +5,7 @@ ARG KERNEL_VER=0
 ARG USER_NAME=user
 ARG ROBOT_NAME=robot
 ARG RECIPES_TAG=main
+ARG RECIPES_REPO=git@github.com:advrhumanoids/multidof_recipes.git
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 # env
