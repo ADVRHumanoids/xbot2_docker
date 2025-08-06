@@ -1,7 +1,9 @@
 # THIS ARG MUST COME BEFORE FROM
 ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
 
-FROM base
+ARG TAGNAME=latest
+
+FROM ${BASE_IMAGE_NAME}-base:${TAGNAME}
 
 RUN echo "KERNEL_VER = $KERNEL_VER"
 

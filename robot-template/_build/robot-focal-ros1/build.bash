@@ -12,12 +12,10 @@ export RECIPES_REPO=${RECIPES_REPO:-git@github.com:advrhumanoids/multidof_recipe
 # Docker image naming - matches original nexus pattern
 export TAGNAME=${TAGNAME:-v1.0.0}
 export BASE_IMAGE_NAME=${BASE_IMAGE_NAME:-${ROBOT_NAME}-cetc-focal-ros1}
-# Add registry as a separate variable for flexibility
-export DOCKER_REGISTRY=${DOCKER_REGISTRY:-hhcmhub}
 
 # Parse command line arguments
 BUILD_MODE="local"  # Default to local build
-PUSH_IMAGES="false"  # Default to NOT push
+PUSH_IMAGES="false"  # Default to NOT push (changed from "true")
 NO_CACHE=""  # Default to use cache
 
 while [[ $# -gt 0 ]]; do
@@ -54,7 +52,7 @@ while [[ $# -gt 0 ]]; do
             echo ""
             echo "Environment variables:"
             echo "  USER_NAME, USER_ID, KERNEL_VER, ROBOT_NAME, RECIPES_TAG"
-            echo "  BASE_IMAGE_NAME, TAGNAME, DOCKER_REGISTRY"
+            echo "  BASE_IMAGE_NAME, TAGNAME, REGISTRY"
             echo ""
             echo "Examples:"
             echo "  $0                    # Build locally, don't push"
@@ -82,137 +80,61 @@ echo "  ROBOT_NAME: $ROBOT_NAME"
 echo "  RECIPES_TAG: $RECIPES_TAG"
 echo "  BASE_IMAGE_NAME: $BASE_IMAGE_NAME"
 echo "  TAGNAME: $TAGNAME"
-echo "  DOCKER_REGISTRY: $DOCKER_REGISTRY"
 
-# Helper function to check if docker buildx is available and set up
-ensure_buildx() {
-    if ! docker buildx version &> /dev/null; then
-        echo "Error: Docker Buildx is not available. Please update Docker."
-        exit 1
-    fi
-    
-    # Create a new builder instance if it doesn't exist
-    # This ensures we have all features available
-    if ! docker buildx ls | grep -q "kyon-builder"; then
-        echo "Creating Docker Buildx builder instance..."
-        docker buildx create --name kyon-builder --driver docker-container --use
-    else
-        docker buildx use kyon-builder
-    fi
-}
 
 if [ "$BUILD_MODE" == "remote" ]; then
     echo ""
     echo "Pulling images from remote registry..."
     
-    # For pulling, we still use direct docker pull commands
-    # since bake is primarily for building
-    docker pull ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:$TAGNAME
-    docker pull ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
-    docker pull ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
-    
-    # Tag them for local use (without registry prefix)
-    docker tag ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:$TAGNAME ${BASE_IMAGE_NAME}-base
-    docker tag ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME ${BASE_IMAGE_NAME}-xeno
-    docker tag ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:$TAGNAME ${BASE_IMAGE_NAME}-locomotion
-    
+    # Pull the images
+    docker compose -f compose.pull.yml pull
     echo "Images pulled and tagged successfully!"
     
 else
     echo ""
-    echo "Building images locally using Docker Bake..."
-    
-    # Ensure buildx is available and configured
-    ensure_buildx
-    
-    # Check if docker-bake.hcl exists, if not, fall back to compose
-    if [ ! -f "docker-bake.hcl" ]; then
-        echo "Warning: docker-bake.hcl not found, falling back to docker compose..."
-        echo "Consider creating a docker-bake.hcl file for better dependency management."
-        
-        # Fallback to original compose behavior
-        docker compose build $NO_CACHE
-        
-        # Tag the built images for registry
-        docker tag ${BASE_IMAGE_NAME}-base ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:$TAGNAME
-        docker tag ${BASE_IMAGE_NAME}-xeno ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
-        docker tag ${BASE_IMAGE_NAME}-locomotion ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
-    else
-        # Use Docker Bake for coordinated builds with dependency management
-        echo "Using Docker Bake for coordinated build..."
-        
-        # Prepare bake flags
-        BAKE_FLAGS=""
-        
-        # Add no-cache flag if requested
-        if [ -n "$NO_CACHE" ]; then
-            BAKE_FLAGS="$BAKE_FLAGS --no-cache"
-        fi
-        
-        # Set output type based on push requirement
-        if [ "$PUSH_IMAGES" == "true" ]; then
-            # This will build and push in one operation
-            BAKE_FLAGS="$BAKE_FLAGS --push"
-            echo "Build will push to registry upon completion..."
-        else
-            # Load images into local Docker daemon
-            BAKE_FLAGS="$BAKE_FLAGS --load"
-        fi
-        
-        # Export all variables that the bake file might need
-        export DOCKER_REGISTRY
-        export BASE_IMAGE_NAME
-        export TAGNAME
-        export KERNEL_VER
-        export USER_NAME
-        export USER_ID
-        export ROBOT_NAME
-        export RECIPES_TAG
-        export RECIPES_REPO
-        
-        # Run the bake build
-        echo "Executing: docker buildx bake -f docker-bake.hcl $BAKE_FLAGS"
-        docker buildx bake -f docker-bake.hcl $BAKE_FLAGS
-        
-        if [ $? -ne 0 ]; then
-            echo "Error: Docker Bake build failed!"
-            exit 1
-        fi
+    echo "Building images locally..."
+    if [ -n "$NO_CACHE" ]; then
+        echo "Building without cache..."
     fi
-    
+    # Build the docker images with optional --no-cache flag
+
+    docker compose build $NO_CACHE    
+    # Tag the built images for registry
+    docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
+    docker tag ${BASE_IMAGE_NAME}-xeno hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
+    docker tag ${BASE_IMAGE_NAME}-locomotion hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
     echo "Images built successfully!"
+
     
-    # If using bake with --push, the push already happened
-    # If using compose fallback, we need to push manually
-    if [ "$PUSH_IMAGES" == "true" ] && [ ! -f "docker-bake.hcl" ]; then
+    if [ "$PUSH_IMAGES" == "true" ]; then
         echo ""
         echo "Pushing images to remote registry..."
         
-        docker push ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:$TAGNAME
-        docker push ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
-        docker push ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
+        # Push the images
+        docker push hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
+        docker push hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
+        docker push hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
         
+        echo ""
         echo "Images pushed successfully!"
+    else
+        echo ""
+        echo "Images built locally. Use --push to upload to registry."
     fi
 fi
 
 echo ""
 echo "Operation completed successfully!"
 echo ""
+echo "Local images available:"
+echo "  ${BASE_IMAGE_NAME}-base"
+echo "  ${BASE_IMAGE_NAME}-xeno"
+echo "  ${BASE_IMAGE_NAME}-locomotion"
 
-# Show what images are available
-if [ "$BUILD_MODE" == "local" ] || [ "$BUILD_MODE" == "remote" ]; then
-    echo "Local images available:"
-    docker images --format "table {{.Repository}}:{{.Tag}}\t{{.Size}}" | grep "${BASE_IMAGE_NAME}" || true
-fi
-
-if [ "$PUSH_IMAGES" == "true" ] || [ "$BUILD_MODE" == "remote" ]; then
+if [ "$PUSH_IMAGES" == "true" ]; then
     echo ""
     echo "Remote images available:"
-    echo "  ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:$TAGNAME"
-    echo "  ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME"
-    echo "  ${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-locomotion:$TAGNAME"
+    echo "  hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME"
+    echo "  hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME"
+    echo "  hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME"
 fi
-
-# Clean up builder instance on exit (optional)
-# trap "docker buildx use default" EXIT

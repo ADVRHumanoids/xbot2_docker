@@ -24,6 +24,7 @@ services:
       secrets: [netrc]
       args:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
+        TAGNAME: ${TAGNAME}
         KERNEL_VER: ${KERNEL_VER}
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
@@ -36,10 +37,12 @@ services:
   locomotion:
     image: ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     build:
+      context: .
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}  # This overrides the default
+        TAGNAME: ${TAGNAME}
         USER_ID: ${USER_ID}
         USER_NAME: ${USER_NAME}
         ROBOT_NAME: ${ROBOT_NAME}

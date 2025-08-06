@@ -39,7 +39,6 @@ variable "RECIPES_REPO" {
 }
 
 # Function to generate tags for images
-# This creates both the versioned tag and a local tag
 function "tags" {
   params = [name, suffix]
   result = [
@@ -68,9 +67,10 @@ target "base" {
   
   tags = tags("base", "")
   
-  # Enable Docker layer caching for better performance
-  cache-from = ["type=registry,ref=${BASE_IMAGE_NAME}-base:buildcache"]
-  cache-to = ["type=registry,ref=${BASE_IMAGE_NAME}-base:buildcache,mode=max"]
+  # Disable registry cache for now to avoid errors
+  # You can enable this later once images exist in registry
+  # cache-from = ["type=registry,ref=${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:buildcache"]
+  # cache-to = ["type=registry,ref=${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-base:buildcache,mode=max"]
 }
 
 # Xeno real-time image - depends on base
@@ -78,8 +78,9 @@ target "xeno" {
   dockerfile = "Dockerfile-xeno"
   context = "."
   
+  # Build args that the Dockerfile expects
+  # Don't pass BASE_IMAGE_NAME since we're using contexts
   args = {
-    BASE_IMAGE_NAME = "${BASE_IMAGE_NAME}-base:${TAGNAME}"
     KERNEL_VER = KERNEL_VER
     USER_NAME = USER_NAME
     USER_ID = USER_ID
@@ -87,10 +88,10 @@ target "xeno" {
   
   tags = tags("xeno", "-v${KERNEL_VER}")
   
-  # This is the critical dependency declaration
+  # Critical: this ensures base builds first
   depends_on = ["base"]
   
-  # Use the base image we just built
+  # This maps the base target output to be used as "base" in FROM instruction
   contexts = {
     base = "target:base"
   }
@@ -101,15 +102,15 @@ target "locomotion" {
   dockerfile = "Dockerfile-locomotion"
   context = "."
   
+  # Build args for locomotion
   args = {
-    BASE_IMAGE_NAME = "${BASE_IMAGE_NAME}-base:${TAGNAME}"
     USER_NAME = USER_NAME
     USER_ID = USER_ID
   }
   
   tags = tags("locomotion", "")
   
-  # This ensures locomotion waits for base to complete
+  # Ensure base completes first
   depends_on = ["base"]
   
   contexts = {
