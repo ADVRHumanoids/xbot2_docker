@@ -1,5 +1,5 @@
 ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
-ARG TAGNAME=latest
+ARG TAGNAME=v1.0.0
 
 FROM ${BASE_IMAGE_NAME}-base:${TAGNAME}
 

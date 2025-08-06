@@ -1,7 +1,7 @@
 # THIS ARG MUST COME BEFORE FROM
 ARG DOCKER_REGISTRY=hhcmhub
 ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
-ARG TAGNAME=latest
+ARG TAGNAME=v1.0.0
 
 FROM ${BASE_IMAGE_NAME}-base:${TAGNAME}
 
@@ -17,6 +17,15 @@ ARG RECIPES_TAG=main
 
 # remove xbot2
 RUN sudo apt remove -y xbot2
+# remove xbot2
+USER root
+
+# Run the update and install commands (no sudo needed now)
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential libtool
+
+# Switch back to your non-root user
+# The USER_NAME variable should be available from your build args
+USER ${USER_NAME}
 
 # build required software (requires valid netrc for auth)
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID /bin/bash scripts/build-xeno.bash

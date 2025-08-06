@@ -100,9 +100,9 @@ else
 
     docker compose build $NO_CACHE    
     # Tag the built images for registry
-    docker tag ${BASE_IMAGE_NAME}-base hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
-    docker tag ${BASE_IMAGE_NAME}-xeno hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
-    docker tag ${BASE_IMAGE_NAME}-locomotion hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
+    docker tag ${BASE_IMAGE_NAME}-base:${TAGNAME} hhcmhub/${BASE_IMAGE_NAME}-base:$TAGNAME
+    docker tag ${BASE_IMAGE_NAME}-xeno:${TAGNAME} hhcmhub/${BASE_IMAGE_NAME}-xeno-v$KERNEL_VER:$TAGNAME
+    docker tag ${BASE_IMAGE_NAME}-locomotion:${TAGNAME} hhcmhub/${BASE_IMAGE_NAME}-locomotion:$TAGNAME
     echo "Images built successfully!"
 
     

@@ -2,7 +2,6 @@ services:
   base:
     image: ${BASE_IMAGE_NAME}-base:${TAGNAME}
     build:
-      context: .
       dockerfile: Dockerfile-base
       secrets: [netrc]
       args:
@@ -19,7 +18,6 @@ services:
   xeno:
     image: ${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
     build:
-      context: .
       dockerfile: Dockerfile-xeno
       secrets: [netrc]
       args:
@@ -37,7 +35,6 @@ services:
   locomotion:
     image: ${BASE_IMAGE_NAME}-locomotion:${TAGNAME}
     build:
-      context: .
       dockerfile: Dockerfile-locomotion
       secrets: [netrc]
       args:
