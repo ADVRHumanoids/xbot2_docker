@@ -20,7 +20,7 @@ function "tags" {
   ]
 }
 
-# Default group - builds all images
+# Default group - builds all images in the correct order
 group "default" {
   targets = ["base", "xeno", "locomotion"]
 }
