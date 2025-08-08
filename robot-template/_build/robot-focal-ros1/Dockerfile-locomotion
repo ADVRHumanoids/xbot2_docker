@@ -1,7 +1,7 @@
 ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
 ARG TAGNAME=v1.0.0
 
-FROM ${BASE_IMAGE_NAME}-base:${TAGNAME}
+FROM base
 
 # Build arguments - these come from the robot config (e.g., kyon-config.env)
 ARG USER_ID=1000

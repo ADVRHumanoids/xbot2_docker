@@ -34,15 +34,11 @@ variable "RECIPES_TAG" {
   default = "main"
 }
 
-variable "RECIPES_REPO" {
-  default = "git@github.com:advrhumanoids/multidof_recipes.git"
-}
-
 # Function to generate tags for images
 function "tags" {
   params = [name, suffix]
   result = [
-    "${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-${name}${suffix}:${TAGNAME}",
+    "${BASE_IMAGE_NAME}-${name}${suffix}:${TAGNAME}",
     "${BASE_IMAGE_NAME}-${name}"
   ]
 }
@@ -62,9 +58,13 @@ target "base" {
     USER_ID = USER_ID
     ROBOT_NAME = ROBOT_NAME
     RECIPES_TAG = RECIPES_TAG
-    RECIPES_REPO = RECIPES_REPO
   }
-  
+  secret = [
+  {
+    id = "netrc",
+    env = "NETRC_CONTENT"  # <-- This is the correct method
+  }
+  ]
   tags = tags("base", "")
   
   # Disable registry cache for now to avoid errors
@@ -81,15 +81,23 @@ target "xeno" {
   # Build args that the Dockerfile expects
   # Don't pass BASE_IMAGE_NAME since we're using contexts
   args = {
-    KERNEL_VER = KERNEL_VER
     USER_NAME = USER_NAME
     USER_ID = USER_ID
+    RECIPES_TAG = RECIPES_TAG
+    TAGNAME = TAGNAME
+    KERNEL_VER = KERNEL_VER
   }
   
   tags = tags("xeno", "-v${KERNEL_VER}")
   
   # Critical: this ensures base builds first
   depends_on = ["base"]
+  secret = [
+  {
+    id = "netrc",
+    env = "NETRC_CONTENT"  # <-- This is the correct method
+  }
+]
   
   # This maps the base target output to be used as "base" in FROM instruction
   contexts = {
@@ -106,12 +114,22 @@ target "locomotion" {
   args = {
     USER_NAME = USER_NAME
     USER_ID = USER_ID
+    RECIPES_TAG = RECIPES_TAG
+    TAGNAME = TAGNAME
+    ROBOT_NAME = ROBOT_NAME
+    KERNEL_VER = KERNEL_VER
   }
   
   tags = tags("locomotion", "")
   
   # Ensure base completes first
   depends_on = ["base"]
+  secret = [
+  {
+    id = "netrc",
+    env = "NETRC_CONTENT"  # <-- This is the correct method
+  }
+]
   
   contexts = {
     base = "target:base"
