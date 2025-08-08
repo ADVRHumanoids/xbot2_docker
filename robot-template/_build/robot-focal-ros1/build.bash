@@ -176,7 +176,7 @@ else
         export ROBOT_NAME
         export RECIPES_TAG
         export RECIPES_REPO
-        # AUTOMATIC NETRC SECRET HANDLING  
+        # AUTOMATIC NETRC SECRET HANDLING   
         # Check if the user has a .netrc file in their home directory
         if [ -f "$HOME/.netrc" ]; then
         echo "Found .netrc file, exporting content for build secret..."
