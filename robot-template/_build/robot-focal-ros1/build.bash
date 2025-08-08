@@ -93,11 +93,11 @@ ensure_buildx() {
     
     # Create a new builder instance if it doesn't exist
     # This ensures we have all features available
-    if ! docker buildx ls | grep -q "kyon-builder"; then
+    if ! docker buildx ls | grep -wq "builder"; then
         echo "Creating Docker Buildx builder instance..."
-        docker buildx create --name kyon-builder --driver docker-container --use
+        docker buildx create --name builder --driver docker-container --use
     else
-        docker buildx use kyon-builder
+        docker buildx use builder
     fi
 }
 

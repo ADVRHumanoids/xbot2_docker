@@ -2,37 +2,14 @@
 # This file orchestrates the building of robot Docker images with proper dependencies
 
 # Variables that can be overridden from environment or command line
-variable "DOCKER_REGISTRY" {
-  default = "hhcmhub"
-}
-
-variable "BASE_IMAGE_NAME" {
-  default = "robot-cetc-focal-ros1"
-}
-
-variable "TAGNAME" {
-  default = "latest"
-}
-
-variable "KERNEL_VER" {
-  default = "5"
-}
-
-variable "USER_NAME" {
-  default = "user"
-}
-
-variable "USER_ID" {
-  default = "1000"
-}
-
-variable "ROBOT_NAME" {
-  default = "robot"
-}
-
-variable "RECIPES_TAG" {
-  default = "main"
-}
+variable "DOCKER_REGISTRY" {}
+variable "BASE_IMAGE_NAME" {}
+variable "TAGNAME" {}
+variable "KERNEL_VER" {}
+variable "USER_NAME" {}
+variable "USER_ID" {}
+variable "ROBOT_NAME" {}
+variable "RECIPES_TAG" {}
 
 # Function to generate tags for images
 function "tags" {
