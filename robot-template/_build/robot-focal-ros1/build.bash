@@ -123,7 +123,14 @@ else
     echo "Building images locally using Docker Bake..."
     
     # Ensure buildx is available and configured
-    ensure_buildx
+    # Only manage the builder's lifecycle if we are NOT in a CI environment.
+    # GitHub Actions and other CI systems set the CI variable to 'true'.
+    if [ -z "$CI" ]; then
+        echo "Local environment detected. Ensuring 'builder' instance exists..."
+        ensure_buildx
+    else
+        echo "CI environment detected. Using the builder provided by the CI environment."
+    fi
     
     # Check if docker-bake.hcl exists, if not, fall back to compose
     if [ ! -f "docker-bake.hcl" ]; then
