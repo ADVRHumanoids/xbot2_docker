@@ -2,22 +2,19 @@
 # This file orchestrates the building of robot Docker images with proper dependencies
 
 # Variables that can be overridden from environment or command line
-variable "DOCKER_REGISTRY" {}
-variable "BASE_IMAGE_NAME" {}
-variable "TAGNAME" {}
-variable "KERNEL_VER" {}
-variable "USER_NAME" {}
-variable "USER_ID" {}
-variable "ROBOT_NAME" {}
-variable "RECIPES_TAG" {}
+variable "DOCKER_REGISTRY" { default = "hhchmhub" }   # <- change to your default namespace
+variable "BASE_IMAGE_NAME" { default = "kyon-cetc-focal-ros1" }
+variable "TAGNAME"         { default = "v1.0.0" }
+variable "KERNEL_VER"      { default = "5" }
+variable "USER_NAME"       { default = "user" }
+variable "USER_ID"         { default = "1000" }
+variable "ROBOT_NAME"      { default = "kyon" }
+variable "RECIPES_TAG"     { default = "kyon-cetc" }
 
 # Function to generate tags for images
-function "tags" {
+function "tag" {
   params = [name, suffix]
-  result = [
-    "${BASE_IMAGE_NAME}-${name}${suffix}:${TAGNAME}",
-    "${BASE_IMAGE_NAME}-${name}"
-  ]
+  result = ["${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-${name}${suffix}:${TAGNAME}"]
 }
 
 # Default group - builds all images in the correct order
@@ -42,7 +39,7 @@ target "base" {
     env = "NETRC_CONTENT"  # <-- This is the correct method
   }
   ]
-  tags = tags("base", "")
+  tags = tag("base", "")
   
   # Disable registry cache for now to avoid errors
   # You can enable this later once images exist in registry
@@ -65,7 +62,7 @@ target "xeno" {
     KERNEL_VER = KERNEL_VER
   }
   
-  tags = tags("xeno", "-v${KERNEL_VER}")
+  tags = tag("xeno", "-v${KERNEL_VER}")
   
   # Critical: this ensures base builds first
   depends_on = ["base"]
@@ -97,7 +94,7 @@ target "locomotion" {
     KERNEL_VER = KERNEL_VER
   }
   
-  tags = tags("locomotion", "")
+  tags = tag("locomotion", "")
   
   # Ensure base completes first
   depends_on = ["base"]
