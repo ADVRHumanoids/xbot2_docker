@@ -17,6 +17,10 @@ ENV DEBIAN_FRONTEND=noninteractive
 # otherwise autocompletion is broken with apt
 RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 
+# add xbot2 source and keys
+RUN sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list'
+RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
+
 # go full ros2
 RUN sudo apt-get update && sudo apt-get install -y \
     ros-$ROS_DISTRO-desktop-full \
@@ -26,6 +30,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-$ROS_DISTRO-realsense2-description \
     ros-$ROS_DISTRO-tf-transformations \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
+    xbot2_desktop_full \
     && sudo apt-get clean
 
 # install useful sw
@@ -56,12 +61,6 @@ SHELL [ "/bin/bash", "-ic" ]
 # source ros
 RUN echo source /opt/ros/$ROS_DISTRO/setup.bash >> .bashrc
 
-# symlink .config dir to persistent storage (must be mounted from docker compose)
-RUN ln -s data/.config .config 
-
-# qtcreator alias (must be mounted from docker compose)
-RUN echo alias qtcreator=~/Qt/Tools/QtCreator/bin/qtcreator >> .bashrc
-
 # venv for python
 RUN python3 -m venv --system-site-packages env 
 RUN echo source ~/env/bin/activate >> .bashrc
@@ -69,12 +68,6 @@ RUN echo source ~/env/bin/activate >> .bashrc
 # pip deps
 RUN pip install setuptools
 RUN pip install hhcm-forest
-
-# source forest ws
-RUN echo source ~/data/forest_ws/setup.bash >> .bashrc
-
-# copy bootstrap
-COPY bootstrap.sh /home/user/bootstrap.sh
 
 # ros2 configuration (cyclonedds, custom sysctl rules, ...)
 RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /home/user/.bashrc
