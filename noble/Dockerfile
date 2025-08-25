@@ -18,8 +18,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 
 # add xbot2 source and keys
-RUN sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list'
-RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | apt-key add -
+RUN sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list'
+RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
 
 # go full ros2
 RUN sudo apt-get update && sudo apt-get install -y \
