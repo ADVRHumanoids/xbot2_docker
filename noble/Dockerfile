@@ -17,9 +17,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # otherwise autocompletion is broken with apt
 RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 
-# add xbot2 source and keys
-RUN sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list'
-RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
+
 
 # go full ros2
 RUN sudo apt-get update && sudo apt-get install -y \
@@ -30,7 +28,6 @@ RUN sudo apt-get update && sudo apt-get install -y \
     ros-$ROS_DISTRO-realsense2-description \
     ros-$ROS_DISTRO-tf-transformations \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
-    xbot2_desktop_full \
     && sudo apt-get clean
 
 # install useful sw
@@ -50,9 +47,14 @@ RUN sudo apt-get update && sudo apt-get install -y \
     locate \
     gdb \
     kmod \
+    file \
     && sudo apt-get clean
 
-RUN sudo apt-get update && sudo apt-get install -y file
+# add xbot2 source and keys
+RUN sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list'
+RUN wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
+
+RUN sudo apt-get update && sudo apt-get install -y xbot2_desktop_full
 
 WORKDIR /home/user
 
