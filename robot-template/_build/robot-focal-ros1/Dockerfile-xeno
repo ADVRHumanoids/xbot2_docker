@@ -5,8 +5,6 @@ ARG TAGNAME=v1.0.0
 
 FROM base
 
-RUN echo "KERNEL_VER = $KERNEL_VER"
-
 # get kernel version
 ARG KERNEL_VER=0
 ARG USER_ID=1000
@@ -14,6 +12,8 @@ ARG USER_NAME=user
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 ARG RECIPES_TAG=main
+
+RUN echo "KERNEL_VER = $KERNEL_VER"
 
 # remove xbot2
 RUN sudo apt remove -y xbot2
