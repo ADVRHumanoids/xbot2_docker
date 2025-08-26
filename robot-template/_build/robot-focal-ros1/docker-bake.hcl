@@ -85,9 +85,9 @@ target "xeno" {
     base = "target:base"
   }
 
-    # Persist layer cache for xeno (kernel-specific)
-  cache-from = ["type=gha,scope=${STACK}-xeno-v${KERNEL_VER}"]
-  cache-to   = ["type=gha,mode=max,scope=${STACK}-xeno-v${KERNEL_VER}"]
+  # Persist layer cache for xeno (kernel-specific)
+  cache-from = ["type=gha,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
+  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
 }
 
 # Locomotion image - depends on base
@@ -119,6 +119,9 @@ target "locomotion" {
   contexts = {
     base = "target:base"
   }
+    # Persist layer cache for locomotion
+  cache-from = ["type=gha,scope=${ROS_VERSION}-locomotion"]
+  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-locomotion"]
 }
 
 # Additional groups for specific build scenarios
