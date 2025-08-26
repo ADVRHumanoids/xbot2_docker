@@ -27,7 +27,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends build-essential
 # The USER_NAME variable should be available from your build args
 USER ${USER_NAME}
 
-# build required software (requires valid netrc for auth)
+# build required software (requires valid netrc for auth) 
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID /bin/bash scripts/build-xeno.bash
 
 # xenomai from regular user
