@@ -23,7 +23,7 @@ USER root
 # Run the update and install commands (no sudo needed now)
 RUN apt-get update && apt-get install -y --no-install-recommends build-essential libtool
 
-# Switch back to your non-root user
+# Switch back to your non-root user 
 # The USER_NAME variable should be available from your build args
 USER ${USER_NAME}
 
