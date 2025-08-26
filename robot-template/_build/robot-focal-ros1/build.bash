@@ -190,8 +190,6 @@ else
         # Run the bake build
         echo "Executing: docker buildx bake -f docker-bake.hcl $BAKE_FLAGS"
         docker buildx bake -f docker-bake.hcl $BAKE_FLAGS
-
-        fi
         
         if [ $? -ne 0 ]; then
             echo "Error: Docker Bake build failed!"

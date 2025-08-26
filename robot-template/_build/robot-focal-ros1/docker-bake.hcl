@@ -2,7 +2,7 @@
 # This file orchestrates the building of robot Docker images with proper dependencies
 
 # Variables that can be overridden from environment or command line
-variable "DOCKER_REGISTRY" { default = "hhchmhub" }   # <- change to your default namespace
+variable "DOCKER_REGISTRY" { default = "hhchmhub" }
 variable "BASE_IMAGE_NAME" { default = "kyon-cetc-focal-ros1" }
 variable "TAGNAME"         { default = "v1.0.0" }
 variable "KERNEL_VER"      { default = "5" }
