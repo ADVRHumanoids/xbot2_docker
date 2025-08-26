@@ -10,6 +10,7 @@ variable "USER_NAME"       { default = "user" }
 variable "USER_ID"         { default = "1000" }
 variable "ROBOT_NAME"      { default = "kyon" }
 variable "RECIPES_TAG"     { default = "kyon-cetc" }
+variable "ROS_VERSION" { default = "ros1" }
 
 # Function to generate tags for images
 function "tag" {
@@ -40,6 +41,12 @@ target "base" {
   }
   ]
   tags = tag("base", "")
+
+
+  # Persist layer cache for base
+  cache-from = ["type=gha,scope=${ROS_VERSION}-base"]
+  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-base"]
+
   
   # Disable registry cache for now to avoid errors
   # You can enable this later once images exist in registry
@@ -77,6 +84,10 @@ target "xeno" {
   contexts = {
     base = "target:base"
   }
+
+    # Persist layer cache for xeno (kernel-specific)
+  cache-from = ["type=gha,scope=${STACK}-xeno-v${KERNEL_VER}"]
+  cache-to   = ["type=gha,mode=max,scope=${STACK}-xeno-v${KERNEL_VER}"]
 }
 
 # Locomotion image - depends on base
@@ -101,7 +112,7 @@ target "locomotion" {
   secret = [
   {
     id = "netrc",
-    env = "NETRC_CONTENT"  # <-- This is the correct method
+    env = "NETRC_CONTENT"
   }
 ]
   

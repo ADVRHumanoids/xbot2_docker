@@ -189,14 +189,8 @@ else
         
         # Run the bake build
         echo "Executing: docker buildx bake -f docker-bake.hcl $BAKE_FLAGS"
-        if [ -n "$CI" ]; then
-        docker buildx bake -f docker-bake.hcl \
-            --set *.cache-from=type=gha \
-            --set *.cache-to=type=gha,mode=max \
-            $BAKE_FLAGS
-        else
-        # local: either no cache flags, or use a registry cache if you want persistence locally too
         docker buildx bake -f docker-bake.hcl $BAKE_FLAGS
+
         fi
         
         if [ $? -ne 0 ]; then
