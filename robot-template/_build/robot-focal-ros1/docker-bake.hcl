@@ -65,7 +65,6 @@ target "xeno" {
     USER_NAME = USER_NAME
     USER_ID = USER_ID
     RECIPES_TAG = RECIPES_TAG
-    TAGNAME = TAGNAME
     KERNEL_VER = KERNEL_VER
   }
   
@@ -100,7 +99,6 @@ target "locomotion" {
     USER_NAME = USER_NAME
     USER_ID = USER_ID
     RECIPES_TAG = RECIPES_TAG
-    TAGNAME = TAGNAME
     ROBOT_NAME = ROBOT_NAME
     KERNEL_VER = KERNEL_VER
   }
