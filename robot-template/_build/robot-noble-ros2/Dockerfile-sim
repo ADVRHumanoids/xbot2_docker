@@ -1,6 +1,6 @@
 ARG BASE_IMAGE_NAME=robot-cetc-noble-ros2
 
-FROM ${BASE_IMAGE_NAME}-base
+FROM base
 # get kernel version
 ARG USER_ID=1000
 ARG KERNEL_VER=0

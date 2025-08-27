@@ -1,6 +1,6 @@
 ARG BASE_IMAGE_NAME=robot-cetc-noble-ros2
 
-FROM ${BASE_IMAGE_NAME}-base
+FROM base
 
 RUN echo "KERNEL_VER = $KERNEL_VER"
 
