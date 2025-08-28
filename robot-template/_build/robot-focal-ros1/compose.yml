@@ -14,6 +14,7 @@ services:
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
         RECIPES_REPO: ${RECIPES_REPO}
+        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
 
   xeno:
     image: ${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME}
@@ -29,6 +30,7 @@ services:
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
         RECIPES_TAG: ${RECIPES_TAG}
+        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
     depends_on:
       - base
 
@@ -47,6 +49,7 @@ services:
         KERNEL_VER: ${KERNEL_VER}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
+        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
     depends_on:
       - base
 secrets:

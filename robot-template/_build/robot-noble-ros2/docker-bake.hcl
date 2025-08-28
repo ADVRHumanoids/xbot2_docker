@@ -3,14 +3,17 @@
 
 # Variables that can be overridden from environment or command line
 variable "DOCKER_REGISTRY" { default = "hhchmhub" }
-variable "BASE_IMAGE_NAME" { default = "kyon-cetc-focal-ros1" }
+variable "BASE_IMAGE_NAME" { default = "kyon-cetc-noble-ros2" }
 variable "TAGNAME"         { default = "v1.0.0" }
 variable "KERNEL_VER"      { default = "5" }
 variable "USER_NAME"       { default = "user" }
 variable "USER_ID"         { default = "1000" }
 variable "ROBOT_NAME"      { default = "kyon" }
 variable "RECIPES_TAG"     { default = "kyon-cetc" }
-variable "ROS_VERSION" { default = "ros1" }
+variable "ROS_VERSION" { default = "ros2" }
+variable ROBOT_PACKAGES{ default = "" }
+variable ADDITIONAL_PACKAGES{ default = "" }
+variable ROBOT_CONFIG_PATH{ default = "~/xbot2_ws/src/robot_config/setup.sh" }
 
 # Function to generate tags for images
 function "tag" {

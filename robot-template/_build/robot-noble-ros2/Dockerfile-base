@@ -5,6 +5,9 @@ ARG KERNEL_VER=0
 ARG USER_NAME=user
 ARG ROBOT_NAME=robot
 ARG RECIPES_TAG=main
+ARG ROBOT_PACKAGES=""
+ARG ADDITIONAL_PACKAGES=""
+ARG ROBOT_CONFIG_PATH="~/xbot2_ws/src/robot_config/setup.sh" 
 
 
 # env
