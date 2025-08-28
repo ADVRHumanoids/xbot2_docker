@@ -17,7 +17,7 @@ ENV PYTHONUNBUFFERED=1
 RUN sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/$(lsb_release -sc) /" > /etc/apt/sources.list.d/xbot-latest.list' && \
     wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add -
 
-# FIX 1: Add the new ROS GPG key
+# FIX 1: Add the new ROS GPG key 
 RUN sudo apt-get update && sudo apt-get install -y curl && \
     sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
