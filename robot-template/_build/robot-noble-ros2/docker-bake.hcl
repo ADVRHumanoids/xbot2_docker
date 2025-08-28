@@ -11,9 +11,9 @@ variable "USER_ID"         { default = "1000" }
 variable "ROBOT_NAME"      { default = "kyon" }
 variable "RECIPES_TAG"     { default = "kyon-cetc" }
 variable "ROS_VERSION" { default = "ros2" }
-variable ROBOT_PACKAGES{ default = "" }
-variable ADDITIONAL_PACKAGES{ default = "" }
-variable ROBOT_CONFIG_PATH{ default = "~/xbot2_ws/src/robot_config/setup.sh" }
+variable "ROBOT_PACKAGES" { default = "" }
+variable "ADDITIONAL_PACKAGES" { default = "" }
+variable "ROBOT_CONFIG_PATH" { default = "~/xbot2_ws/src/robot_config/setup.sh" }
 
 # Function to generate tags for images
 function "tag" {

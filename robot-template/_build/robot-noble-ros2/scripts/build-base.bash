@@ -8,6 +8,7 @@ RECIPES_REPO=${RECIPES_REPO:-git@github.com:advrhumanoids/multidof_recipes.git}
 
 # Additional packages can be specified via environment variable
 ADDITIONAL_PACKAGES=${ADDITIONAL_PACKAGES:-""}
+ROBOT_PACKAGES=${ROBOT_PACKAGES:-""}
 
 # refresh apt registry
 sudo apt update
