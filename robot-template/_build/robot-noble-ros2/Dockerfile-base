@@ -39,6 +39,9 @@ RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME
 # venv
 RUN python3 -m venv --system-site-packages venv 
 
+# auto activate venv
+RUN echo "source /home/$USER_NAME/venv/bin/activate" >> /home/$USER_NAME/.bashrc
+
 # set ownership to user for the whole home folder
 RUN chown -R $USER_NAME .
 
@@ -52,4 +55,4 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 # build required software (requires valid netrc for auth)
 # FIX 2: Activate venv before running build script 
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID \
-    . /home/$USER_NAME/venv/bin/activate && /bin/bash scripts/build-base.bash
+    /bin/bash scripts/build-base.bash
