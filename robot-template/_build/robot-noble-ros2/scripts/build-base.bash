@@ -14,6 +14,8 @@ echo "Installing robot-specific packages: $ROBOT_PACKAGES"
 # refresh apt registry
 sudo apt update
 
+source ~/venv/bin/activate
+
 # install forest
 pip install hhcm-forest
 
@@ -22,7 +24,6 @@ mkdir xbot2_ws && cd xbot2_ws
 forest init
 
 # Activate venv first
-source ~/venv/bin/activate
 
 source setup.bash
 
