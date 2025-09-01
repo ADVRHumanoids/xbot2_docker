@@ -39,9 +39,6 @@ RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME
 # venv
 RUN python3 -m venv --system-site-packages venv 
 
-# auto activate venv
-RUN echo "source /home/$USER_NAME/venv/bin/activate" >> /home/$USER_NAME/.bashrc
-
 # set ownership to user for the whole home folder
 RUN chown -R $USER_NAME .
 

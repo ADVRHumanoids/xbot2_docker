@@ -20,6 +20,10 @@ pip install hhcm-forest
 # do the forest magic
 mkdir xbot2_ws && cd xbot2_ws
 forest init
+
+# Activate venv first
+source ~/venv/bin/activate
+
 source setup.bash
 
 # Add recipes with configurable tag
