@@ -11,6 +11,7 @@ fi
 
 # XBot setup
 source /opt/xbot/setup.sh
+source ~/env/bin/activate
 source ~/xbot2_ws/setup.bash
 
 # Robot-specific setup - can be overridden by robot configs
