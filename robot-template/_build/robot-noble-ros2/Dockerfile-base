@@ -39,7 +39,7 @@ RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME
 # venv
 RUN python3 -m venv --system-site-packages venv 
 
-# set ownership to user for the whole home folder
+# set ownership to user for the whole home folder 
 RUN chown -R $USER_NAME .
 
 # switch to user
