@@ -48,3 +48,6 @@ if [ ! -z "$ROBOT_PACKAGES" ]; then
         forest grow $package -j8 -v
     done
 fi
+
+# rm build to save space
+rm -rf build
