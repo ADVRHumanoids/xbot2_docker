@@ -1,3 +1,4 @@
 v1.0.3: first noble build
 v1.0.6: add xbot binaries
 v1.0.7: add xbot binaries
+v1.0.9: rebuild
