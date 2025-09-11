@@ -20,17 +20,17 @@ ARG ROBOT_CONFIG_PATH="~/xbot2_ws/src/robot_config/setup.sh"
 RUN sudo apt remove -y xbot2 && sudo apt install -y libtool pkg-config
 
 # build xenomai
-# FIX #1: Activate venv for the 'forest' command
-RUN . /home/$USER_NAME/venv/bin/activate && \
+# FIX #1: Activate env for the 'forest' command
+RUN . /home/$USER_NAME/env/bin/activate && \
     cd xbot2_ws && forest grow Xenomai -j 20 --clone-depth 1 -v -m linuxv$KERNEL_VER
 
 # FIX: Remove conflicting file and create the .config directory
 RUN rm -f /home/$USER_NAME/.config && mkdir -p /home/$USER_NAME/.config
 
 # build required software (requires valid netrc for auth)
-# FIX #2: Activate venv for the script that uses 'forest'
+# FIX #2: Activate env for the script that uses 'forest'
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID \
-    . /home/$USER_NAME/venv/bin/activate && \
+    . /home/$USER_NAME/env/bin/activate && \
     /bin/bash scripts/build-xeno.bash
 
 # xenomai from regular user

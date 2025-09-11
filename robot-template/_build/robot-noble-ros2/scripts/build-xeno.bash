@@ -1,4 +1,6 @@
-set -e 
+set -e
+
+source ~/env/bin/activate
 
 cd xbot2_ws
 forest grow circulo9_xbot2_device -j8 -v -m xeno --clone-depth 1
