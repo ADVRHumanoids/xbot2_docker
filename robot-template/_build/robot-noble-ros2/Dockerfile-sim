@@ -18,5 +18,5 @@ RUN sudo apt update && sudo apt install -y libglfw3-dev
 
 # build xbot2_mujoco
 # FIX: Activate the virtual environment before running forest
-RUN . /home/user/venv/bin/activate && \
+RUN . /home/user/env/bin/activate && \
     cd xbot2_ws && forest grow xbot2_mujoco -j 20 -v

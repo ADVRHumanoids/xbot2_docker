@@ -14,8 +14,8 @@ echo "Installing robot-specific packages: $ROBOT_PACKAGES"
 # refresh apt registry
 sudo apt update
 
-# Activate venv first
-source ~/venv/bin/activate
+# Activate env first
+source ~/env/bin/activate
 
 # install forest
 pip install hhcm-forest
