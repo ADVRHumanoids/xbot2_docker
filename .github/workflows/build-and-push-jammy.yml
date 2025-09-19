@@ -30,8 +30,8 @@ jobs:
 
       - name: Run build.bash
         run: USER_ID=1000 ./jammy/build.bash
-        if: contains(env.COMMIT_MESSAGE, '[build jammy]')
+        if: startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build jammy]')
 
       - name: Run push.sh
         run: ./jammy/push.sh
-        if: startsWith(github.ref, 'refs/tags/v') && contains(env.COMMIT_MESSAGE, '[build jammy]')
+        if: startsWith(github.ref, 'refs/tags/v')
