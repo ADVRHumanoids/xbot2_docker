@@ -3,3 +3,4 @@ v1.0.6: add xbot binaries
 v1.0.7: add xbot binaries
 v1.0.9: rebuild
 v1.0.10: rebuild after xbot2_ifc update
+v1.0.11: rebuild after xbot2_ifc update
