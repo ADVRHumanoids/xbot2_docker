@@ -1,4 +1,4 @@
-set -e
+set -x
 
 source ~/env/bin/activate
 

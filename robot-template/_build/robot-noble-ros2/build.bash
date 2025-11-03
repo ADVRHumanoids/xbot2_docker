@@ -165,19 +165,6 @@ else
             # Load images into local Docker daemon
             BAKE_FLAGS="$BAKE_FLAGS --load"
         fi
-        
-        # Export all variables that the bake file might need
-        export DOCKER_REGISTRY
-        export BASE_IMAGE_NAME
-        export TAGNAME
-        export KERNEL_VER
-        export USER_NAME
-        export USER_ID
-        export ROBOT_NAME
-        export RECIPES_TAG
-        export RECIPES_REPO
-        export ROBOT_PACKAGES
-        export ADDITIONAL_PACKAGES
 
         # AUTOMATIC NETRC SECRET HANDLING    
         # Check if the user has a .netrc file in their home directory

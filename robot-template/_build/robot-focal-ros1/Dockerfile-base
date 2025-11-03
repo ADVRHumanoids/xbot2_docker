@@ -8,6 +8,7 @@ ARG RECIPES_TAG=main
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 ARG ROBOT_CONFIG_PATH=""
+ENV ROBOT_CONFIG_PATH=${ROBOT_CONFIG_PATH}
 
 # env
 ENV PYTHONUNBUFFERED=1
@@ -49,7 +50,7 @@ RUN chown -R $USER_NAME /home/$USER_NAME
 
 WORKDIR /home/$USER_NAME
 
-# bashrc setup
+# bashrc setup 
 COPY --chown=$USER_NAME scripts /home/$USER_NAME/scripts
 RUN cp /etc/skel/.bashrc .bashrc.bak || true
 RUN bash -c "echo source /home/${USER_NAME}/scripts/env.bash >> /home/$USER_NAME/.bashrc"

@@ -15,11 +15,14 @@ source ~/env/bin/activate
 source ~/xbot2_ws/setup.bash
 
 # Robot-specific setup - can be overridden by robot configs
-ROBOT_CONFIG_PATH=${ROBOT_CONFIG_PATH:-"~/xbot2_ws/src/robot_config/setup.sh"}
-if [ -f "$ROBOT_CONFIG_PATH" ]; then
-    source $ROBOT_CONFIG_PATH
-fi
+: "${ROBOT_NAME:=robot}"
+: "${ROBOT_CONFIG_PATH:=$HOME/xbot2_ws/src/${ROBOT_NAME}_config/setup.sh}"
 
+if [[ -f "$ROBOT_CONFIG_PATH" ]]; then
+  source "$ROBOT_CONFIG_PATH"
+else
+  echo "WARN: $ROBOT_CONFIG_PATH not found"
+fi
 # Autocompletion for common tools
 eval "$(register-python-argcomplete ecat)"
 eval "$(register-python-argcomplete forest)"

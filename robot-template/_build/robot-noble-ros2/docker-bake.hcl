@@ -13,7 +13,6 @@ variable "RECIPES_TAG"     { default = "kyon-cetc" }
 variable "ROS_VERSION" { default = "ros2" }
 variable "ROBOT_PACKAGES" { default = "" }
 variable "ADDITIONAL_PACKAGES" { default = "" }
-variable "ROBOT_CONFIG_PATH" { default = "~/xbot2_ws/src/robot_config/setup.sh" }
 
 # Function to generate tags for images
 function "tag" {
@@ -38,7 +37,6 @@ target "base" {
     RECIPES_TAG = RECIPES_TAG
     ROBOT_PACKAGES = ROBOT_PACKAGES
     ADDITIONAL_PACKAGES = ADDITIONAL_PACKAGES
-    ROBOT_CONFIG_PATH = ROBOT_CONFIG_PATH
 
   }
   secret = [
@@ -71,11 +69,11 @@ target "xeno" {
   args = {
     USER_NAME = USER_NAME
     USER_ID = USER_ID
+    ROBOT_NAME = ROBOT_NAME
     RECIPES_TAG = RECIPES_TAG
     KERNEL_VER = KERNEL_VER
     ROBOT_PACKAGES = ROBOT_PACKAGES
     ADDITIONAL_PACKAGES = ADDITIONAL_PACKAGES
-    ROBOT_CONFIG_PATH = ROBOT_CONFIG_PATH
   }
   
   tags = tag("xeno", "-v${KERNEL_VER}")
@@ -113,7 +111,6 @@ target "sim" {
     KERNEL_VER = KERNEL_VER
     ROBOT_PACKAGES = ROBOT_PACKAGES
     ADDITIONAL_PACKAGES = ADDITIONAL_PACKAGES
-    ROBOT_CONFIG_PATH = ROBOT_CONFIG_PATH
   }
   
   tags = tag("sim", "")

@@ -14,7 +14,6 @@ services:
         RECIPES_TAG: ${RECIPES_TAG}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
 
   xeno:
     image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-xeno
@@ -31,7 +30,6 @@ services:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
   sim:
     image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-sim
     depends_on: [base]
@@ -49,7 +47,6 @@ services:
         BASE_IMAGE_NAME: ${BASE_IMAGE_NAME}
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
-        ROBOT_CONFIG_PATH: ${ROBOT_CONFIG_PATH}
 
 secrets:
   netrc:
