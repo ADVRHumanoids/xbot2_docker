@@ -222,8 +222,4 @@ if [ "$PUSH_IMAGES" == "true" ] || [ "$BUILD_MODE" == "remote" ]; then
 fi
 
 # Clean up builder instance on exit (optional)
-<<<<<<< HEAD
 # trap "docker buildx use default" EXIT
-=======
-# trap "docker buildx use default" EXIT
->>>>>>> ad10c99 (fix naming convention)
