@@ -1,6 +1,6 @@
 services:
   base:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-base
+    image: ${BASE_IMAGE_NAME:-robot-noble-ros2}-base
     build: 
       dockerfile: Dockerfile-base
       secrets: [netrc]
@@ -16,7 +16,7 @@ services:
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
 
   xeno:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-xeno
+    image: ${BASE_IMAGE_NAME:-robot-noble-ros2}-xeno
     depends_on: [base]
     build: 
       dockerfile: Dockerfile-xeno
@@ -31,7 +31,7 @@ services:
         ROBOT_PACKAGES: ${ROBOT_PACKAGES}
         ADDITIONAL_PACKAGES: ${ADDITIONAL_PACKAGES}
   sim:
-    image: ${BASE_IMAGE_NAME:-robot-cetc-noble-ros2}-sim
+    image: ${BASE_IMAGE_NAME:-robot-noble-ros2}-sim
     depends_on: [base]
     build: 
       dockerfile: Dockerfile-sim

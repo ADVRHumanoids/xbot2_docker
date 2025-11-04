@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_NAME=robot-cetc-noble-ros2
+ARG BASE_IMAGE_NAME=robot-noble-ros2
 
 FROM base
 

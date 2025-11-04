@@ -4,5 +4,5 @@ services:
     image: hhcmhub/${BASE_IMAGE_NAME}-base:${TAGNAME:-latest}
   xeno:
     image: hhcmhub/${BASE_IMAGE_NAME}-xeno-v${KERNEL_VER}:${TAGNAME:-latest}
-  locomotion:
-    image: hhcmhub/${BASE_IMAGE_NAME}-locomotion:${TAGNAME:-latest}
+  sim:
+    image: hhcmhub/${BASE_IMAGE_NAME}-sim:${TAGNAME:-latest}

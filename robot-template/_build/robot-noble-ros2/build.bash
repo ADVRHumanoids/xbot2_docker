@@ -9,9 +9,9 @@ export ROBOT_NAME=${ROBOT_NAME:-robot}
 export RECIPES_TAG=${RECIPES_TAG:-main}
 export RECIPES_REPO=${RECIPES_REPO:-git@github.com:advrhumanoids/multidof_recipes.git}
 
-# Docker image naming - matches original pattern
+# Docker image naming - matches updated nexus convention
 export TAGNAME=${TAGNAME:-latest}
-export BASE_IMAGE_NAME=${BASE_IMAGE_NAME:-${ROBOT_NAME}-cetc-noble-ros2}
+export BASE_IMAGE_NAME=${BASE_IMAGE_NAME:-${ROBOT_NAME}-noble-ros2}
 # Add registry as a separate variable for flexibility
 export DOCKER_REGISTRY=${DOCKER_REGISTRY:-hhcmhub}
 
@@ -222,4 +222,8 @@ if [ "$PUSH_IMAGES" == "true" ] || [ "$BUILD_MODE" == "remote" ]; then
 fi
 
 # Clean up builder instance on exit (optional)
+<<<<<<< HEAD
 # trap "docker buildx use default" EXIT
+=======
+# trap "docker buildx use default" EXIT
+>>>>>>> ad10c99 (fix naming convention)

@@ -1,4 +1,4 @@
-ARG BASE_IMAGE_NAME=robot-cetc-focal-ros1
+ARG BASE_IMAGE_NAME=robot-focal-ros1
 ARG TAGNAME=v1.0.0
 
 FROM base
@@ -34,7 +34,7 @@ USER ${USER_NAME}
 # Set environment variables for the build
 ENV RECIPES_TAG=$RECIPES_TAG
 
-# grow - using configurable recipes tag instead of hardcoded "kyon-cetc"
+# grow - using configurable recipes tag instead of hardcoded defaults
 RUN echo 1 && cd ~/xbot2_ws/recipes/multidof_recipes && git pull origin ${RECIPES_TAG}
 
 WORKDIR /home/${USER_NAME}/xbot2_ws

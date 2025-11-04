@@ -32,6 +32,7 @@ forest add-recipes $RECIPES_REPO -t $RECIPES_TAG
 # Core packages that should be available for most robots
 forest grow xbot2_gui_server
 forest grow xbot2_tools -j8
+forest grow centauro_cartesio -j8
 forest grow cartesio_collision_support -j8
 forest grow xbot2_cli
 
