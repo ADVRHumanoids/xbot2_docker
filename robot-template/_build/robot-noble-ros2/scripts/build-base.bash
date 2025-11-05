@@ -35,6 +35,8 @@ forest grow xbot2_tools -j8
 forest grow centauro_cartesio -j8
 forest grow cartesio_collision_support -j8
 forest grow xbot2_cli
+forest grow xbot2_ros
+forest grow centauro_cartesio
 
 # Install additional packages if specified
 if [ ! -z "$ADDITIONAL_PACKAGES" ]; then

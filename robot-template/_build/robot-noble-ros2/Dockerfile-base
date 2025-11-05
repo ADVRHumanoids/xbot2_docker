@@ -50,6 +50,9 @@ SHELL [ "/bin/bash", "-ic" ]
 # configure forest to use https
 ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 
+# pip deps
+RUN source ~/env/bin/activate && pip install netifaces
+
 # build required software (requires valid netrc for auth)
 # FIX 2: Activate env before running build script 
 RUN --mount=type=secret,id=netrc,dst=/home/$USER_NAME/.netrc,uid=$USER_ID \
