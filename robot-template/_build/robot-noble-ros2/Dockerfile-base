@@ -55,9 +55,7 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 # pip deps
 RUN source ~/env/bin/activate && pip install netifaces
 
-# ============ ADD ROS2 DDS CONFIGURATION HERE ============
-# ROS2 DDS Configuration (for all robots using ROS2)
-# Install cmake if not already present (might be needed for ros2_config)
+# ROS2 DDS Configuration 
 RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
         sudo apt-get update && sudo apt-get install -y cmake build-essential; \
     fi
@@ -78,7 +76,7 @@ RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
 RUN if [ "$ROS_DDS_VENDOR" = "cyclonedds" ]; then \
         echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc; \
     fi
-# ============ END ROS2 DDS CONFIGURATION ============
+# END ROS2 DDS CONFIGURATION
 
 # build required software (requires valid netrc for auth)
 # FIX 2: Activate env before running build script 
