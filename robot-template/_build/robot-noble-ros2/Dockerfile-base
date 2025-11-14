@@ -9,7 +9,7 @@ ARG RECIPES_TAG=main
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 
-# ROS2 DDS Configuration arguments (ADD THESE NEW ARGS)
+# ROS2 DDS Configuration arguments
 ARG ROS_DDS_VENDOR=cyclonedds
 ARG ROS_IP=localhost
 ARG SETUP_ROS2_DDS=true
