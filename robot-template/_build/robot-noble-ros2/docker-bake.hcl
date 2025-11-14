@@ -115,8 +115,8 @@ target "xeno" {
   }
 
   # Persist layer cache for xeno (kernel-specific)
-  cache-from = cache_from("${ROS_VERSION}-base")
-  cache-to = cache_to("${ROS_VERSION}-base")
+  cache-from = cache_from("${ROS_VERSION}-xeno-v${KERNEL_VER}")
+  cache-to = cache_to("${ROS_VERSION}-xeno-v${KERNEL_VER}")
 }
 
 # sim image - depends on base
@@ -150,8 +150,8 @@ target "sim" {
     base = "target:base"
   }
     # Persist layer cache for sim
-  cache-from = cache_from("${ROS_VERSION}-base")
-  cache-to = cache_to("${ROS_VERSION}-base")
+  cache-from = cache_from("${ROS_VERSION}-sim")
+  cache-to = cache_to("${ROS_VERSION}-sim")
 }
 
 # Additional groups for specific build scenarios

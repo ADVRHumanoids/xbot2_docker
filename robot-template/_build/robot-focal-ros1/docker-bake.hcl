@@ -113,8 +113,8 @@ target "xeno" {
   }
 
   # Persist layer cache for xeno (kernel-specific)
-  cache-from = cache_from("${ROS_VERSION}-base")
-  cache-to = cache_to("${ROS_VERSION}-base")
+  cache-from = cache_from("${ROS_VERSION}-xeno-v${KERNEL_VER}")
+  cache-to = cache_to("${ROS_VERSION}-xeno-v${KERNEL_VER}")
   
 }
 
@@ -149,8 +149,8 @@ target "locomotion" {
     base = "target:base"
   }
     # Persist layer cache for locomotion
-  cache-from = cache_from("${ROS_VERSION}-base")
-  cache-to = cache_to("${ROS_VERSION}-base")
+  cache-from = cache_from("${ROS_VERSION}-locomotion")
+  cache-to = cache_to("${ROS_VERSION}-locomotion")
   
 }
 
