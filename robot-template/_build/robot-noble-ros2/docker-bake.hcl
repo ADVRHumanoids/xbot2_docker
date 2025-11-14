@@ -13,6 +13,11 @@ variable "RECIPES_TAG"     { default = "kyon" }
 variable "ROS_VERSION" { default = "ros2" }
 variable "ROBOT_PACKAGES" { default = "" }
 variable "ADDITIONAL_PACKAGES" { default = "" }
+variable "CI" { default = "" }  # Will be set by GitHub Actions
+variable "GITHUB_ACTIONS" { default = "" }  # Also set by GitHub Actions
+variable "LOCAL_CACHE_DIR" { default = "/tmp/buildkit-cache" }
+
+
 
 # Function to generate tags for images
 function "tag" {
@@ -20,6 +25,24 @@ function "tag" {
   result = ["${DOCKER_REGISTRY}/${BASE_IMAGE_NAME}-${name}${suffix}:${TAGNAME}"]
 }
 
+function "cache_from" {
+  params = [scope]
+  result = CI != "" ? [
+    "type=gha,scope=${scope}",
+    "type=local,src=${LOCAL_CACHE_DIR}/${scope}"
+  ] : [
+    "type=local,src=${LOCAL_CACHE_DIR}/${scope}"
+  ]
+}
+function "cache_to" {
+  params = [scope]
+  result = CI != "" ? [
+    "type=gha,mode=max,scope=${scope}",
+    "type=local,dest=${LOCAL_CACHE_DIR}/${scope},mode=max"
+  ] : [
+    "type=local,dest=${LOCAL_CACHE_DIR}/${scope},mode=max"
+  ]
+}
 # Default group - builds all images in the correct order
 group "default" {
   targets = ["base", "xeno", "sim"]
@@ -49,9 +72,8 @@ target "base" {
 
 
   # Persist layer cache for base
-  cache-from = ["type=gha,scope=${ROS_VERSION}-base"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-base"]
-
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
   
   # Disable registry cache for now to avoid errors
   # You can enable this later once images exist in registry
@@ -93,8 +115,8 @@ target "xeno" {
   }
 
   # Persist layer cache for xeno (kernel-specific)
-  cache-from = ["type=gha,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
 }
 
 # sim image - depends on base
@@ -128,8 +150,8 @@ target "sim" {
     base = "target:base"
   }
     # Persist layer cache for sim
-  cache-from = ["type=gha,scope=${ROS_VERSION}-sim"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-sim"]
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
 }
 
 # Additional groups for specific build scenarios

@@ -35,7 +35,7 @@ USER ${USER_NAME}
 ENV RECIPES_TAG=$RECIPES_TAG
 
 # grow - using configurable recipes tag instead of hardcoded defaults
-RUN echo 1 && cd ~/xbot2_ws/recipes/multidof_recipes && git pull origin ${RECIPES_TAG}
+RUN cd ~/xbot2_ws/recipes/multidof_recipes && git pull origin ${RECIPES_TAG}
 
 WORKDIR /home/${USER_NAME}/xbot2_ws
 

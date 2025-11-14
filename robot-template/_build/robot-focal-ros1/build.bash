@@ -169,12 +169,12 @@ else
         # AUTOMATIC NETRC SECRET HANDLING    
         # Check if the user has a .netrc file in their home directory
         if [ -f "$HOME/.netrc" ]; then
-        echo "Found .netrc file, exporting content for build secret..."
-        export NETRC_CONTENT=$(cat "$HOME/.netrc")
+            #echo "Found .netrc file, exporting content for build secret..."
+            export NETRC_CONTENT=$(cat "$HOME/.netrc")
         else
         # If the file doesn't exist, just print a warning.
         # The build can continue, but will fail if private repos are needed.
-        echo "Warning: ~/.netrc not found. Private repository access may fail."
+            echo "Warning: ~/.netrc not found. Private repository access may fail."
         fi
         
         # Run the bake build

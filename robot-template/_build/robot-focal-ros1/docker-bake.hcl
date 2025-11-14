@@ -14,7 +14,28 @@ variable "ROS_VERSION" { default = "ros1" }
 variable "ROBOT_PACKAGES" { default = "" }
 variable "ADDITIONAL_PACKAGES" { default = "" }
 variable "ROBOT_CONFIG_PATH" { default = "~/xbot2_ws/src/robot_config/setup.sh" }
+variable "CI" { default = "" }  # Will be set by GitHub Actions
+variable "GITHUB_ACTIONS" { default = "" }  # Also set by GitHub Actions
+variable "LOCAL_CACHE_DIR" { default = "/tmp/buildkit-cache" }
 
+function "cache_from" {
+  params = [scope]
+  result = CI != "" ? [
+    "type=gha,scope=${scope}",
+    "type=local,src=${LOCAL_CACHE_DIR}/${scope}"
+  ] : [
+    "type=local,src=${LOCAL_CACHE_DIR}/${scope}"
+  ]
+}
+function "cache_to" {
+  params = [scope]
+  result = CI != "" ? [
+    "type=gha,mode=max,scope=${scope}",
+    "type=local,dest=${LOCAL_CACHE_DIR}/${scope},mode=max"
+  ] : [
+    "type=local,dest=${LOCAL_CACHE_DIR}/${scope},mode=max"
+  ]
+}
 # Function to generate tags for images
 function "tag" {
   params = [name, suffix]
@@ -49,9 +70,8 @@ target "base" {
 
 
   # Persist layer cache for base
-  cache-from = ["type=gha,scope=${ROS_VERSION}-base"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-base"]
-
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
   
   # Disable registry cache for now to avoid errors
   # You can enable this later once images exist in registry
@@ -93,8 +113,9 @@ target "xeno" {
   }
 
   # Persist layer cache for xeno (kernel-specific)
-  cache-from = ["type=gha,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-xeno-v${KERNEL_VER}"]
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
+  
 }
 
 # Locomotion image - depends on base
@@ -128,8 +149,9 @@ target "locomotion" {
     base = "target:base"
   }
     # Persist layer cache for locomotion
-  cache-from = ["type=gha,scope=${ROS_VERSION}-locomotion"]
-  cache-to   = ["type=gha,mode=max,scope=${ROS_VERSION}-locomotion"]
+  cache-from = cache_from("${ROS_VERSION}-base")
+  cache-to = cache_to("${ROS_VERSION}-base")
+  
 }
 
 # Additional groups for specific build scenarios
