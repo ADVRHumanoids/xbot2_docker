@@ -16,7 +16,9 @@ variable "ADDITIONAL_PACKAGES" { default = "" }
 variable "CI" { default = "" }  # Will be set by GitHub Actions
 variable "GITHUB_ACTIONS" { default = "" }  # Also set by GitHub Actions
 variable "LOCAL_CACHE_DIR" { default = "/tmp/buildkit-cache" }
-
+variable "ROS_DDS_VENDOR" { default = "cyclonedds" }
+variable "ROS_IP" { default = "localhost" }
+variable "SETUP_ROS2_DDS" { default = "true" }
 
 
 # Function to generate tags for images
@@ -60,7 +62,10 @@ target "base" {
     RECIPES_TAG = RECIPES_TAG
     ROBOT_PACKAGES = ROBOT_PACKAGES
     ADDITIONAL_PACKAGES = ADDITIONAL_PACKAGES
-
+    # Add DDS configuration args
+    ROS_DDS_VENDOR = ROS_DDS_VENDOR
+    ROS_IP = ROS_IP
+    SETUP_ROS2_DDS = SETUP_ROS2_DDS
   }
   secret = [
   {

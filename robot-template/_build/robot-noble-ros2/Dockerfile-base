@@ -9,7 +9,10 @@ ARG RECIPES_TAG=main
 ARG ROBOT_PACKAGES=""
 ARG ADDITIONAL_PACKAGES=""
 
-
+# ROS2 DDS Configuration arguments (ADD THESE NEW ARGS)
+ARG ROS_DDS_VENDOR=cyclonedds
+ARG ROS_IP=localhost
+ARG SETUP_ROS2_DDS=true
 
 # env
 ENV PYTHONUNBUFFERED=1
@@ -23,7 +26,6 @@ RUN sudo apt-get update && sudo apt-get install -y curl && \
     sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
 
 RUN sudo apt update && sudo apt install -y xbot2_desktop_full ros-$ROS_DISTRO-realsense2-description
-
 
 # add kyon user
 USER root
@@ -52,6 +54,31 @@ ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 
 # pip deps
 RUN source ~/env/bin/activate && pip install netifaces
+
+# ============ ADD ROS2 DDS CONFIGURATION HERE ============
+# ROS2 DDS Configuration (for all robots using ROS2)
+# Install cmake if not already present (might be needed for ros2_config)
+RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
+        sudo apt-get update && sudo apt-get install -y cmake build-essential; \
+    fi
+
+# Conditionally setup ROS2 DDS configuration
+RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
+        git clone https://github.com/advrhumanoids/ros2_config.git /tmp/ros2_config && \
+        cd /tmp/ros2_config && \
+        mkdir build && cd build && \
+        cmake .. -DROS2_IP=$ROS_IP && \
+        make && \
+        sudo make install && \
+        echo "source ~/ros2_config/dds/${ROS_DDS_VENDOR}/setup.bash" >> ~/.bashrc && \
+        cd / && rm -rf /tmp/ros2_config; \
+    fi
+
+# Also set the RMW implementation if using CycloneDDS
+RUN if [ "$ROS_DDS_VENDOR" = "cyclonedds" ]; then \
+        echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> ~/.bashrc; \
+    fi
+# ============ END ROS2 DDS CONFIGURATION ============
 
 # build required software (requires valid netrc for auth)
 # FIX 2: Activate env before running build script 
