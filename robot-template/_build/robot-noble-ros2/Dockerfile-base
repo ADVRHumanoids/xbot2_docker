@@ -62,14 +62,13 @@ RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
 
 # Conditionally setup ROS2 DDS configuration
 RUN if [ "$SETUP_ROS2_DDS" = "true" ]; then \
-        git clone https://github.com/advrhumanoids/ros2_config.git /tmp/ros2_config && \
-        cd /tmp/ros2_config && \
+        git clone https://github.com/advrhumanoids/ros2_config.git ~/ros2_config && \
+        cd ~/ros2_config && \
         mkdir build && cd build && \
         cmake .. -DROS2_IP=$ROS_IP && \
         make && \
         sudo make install && \
-        echo "source ~/ros2_config/dds/${ROS_DDS_VENDOR}/setup.bash" >> ~/.bashrc && \
-        cd / && rm -rf /tmp/ros2_config; \
+        echo "source ~/ros2_config/dds/${ROS_DDS_VENDOR}/setup.bash" >> ~/.bashrc; \
     fi
 
 # Also set the RMW implementation if using CycloneDDS
