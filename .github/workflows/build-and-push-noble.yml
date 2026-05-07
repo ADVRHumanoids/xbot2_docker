@@ -1,6 +1,8 @@
 name: Build and Push (xbot2_docker-noble-ROS2)
 
 on:
+  schedule:
+    - cron: '0 0 1 * *'
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
