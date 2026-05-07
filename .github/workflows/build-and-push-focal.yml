@@ -1,6 +1,8 @@
 name: Build and Push (xbot2_docker-focal-ROS1)
 
 on:
+  schedule:
+    - cron: '0 0 1 * *'
   push:
     tags:
       - 'v[0-9]+.[0-9]+.[0-9]+'
@@ -37,8 +39,8 @@ jobs:
 
       - name: Run build.bash
         run: USER_ID=1000 ./focal/build.bash
-        if: startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build focal]')
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build focal]')
 
       - name: Run push.sh
         run: ./focal/push.sh
-        if: startsWith(github.ref, 'refs/tags/v')
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v')
