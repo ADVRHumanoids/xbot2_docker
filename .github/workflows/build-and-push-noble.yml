@@ -42,15 +42,15 @@ jobs:
           
           export BUILDX_BAKE_ENTITLEMENTS_FS=0 
 
-          ./noble/build.bash 
-            --user-id 1000
-            --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git 
-            --recipes-tag ros2 
-            --forest-njobs 4 
-            --netrc ~/.netrc 
-            --no-cache
-            --snapshot 
-            --snapshot-name "$SNAPSHOT_NAME"
+          ./noble/build.bash \
+            --user-id 1000 \
+            --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git \
+            --recipes-tag ros2 \
+            --forest-njobs 4 \
+            --netrc ~/.netrc \
+            --no-cache \
+            --snapshot \
+            --snapshot-name "$SNAPSHOT_NAME" 
         if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
 
       - name: Run push.sh
