@@ -1,0 +1,38 @@
+FROM hhcmhub/xbot2-noble-dev
+
+## configuration
+
+ARG RECIPES_REPO
+ARG RECIPES_TAG
+ARG FOREST_NJOBS=1
+ARG USER_ID
+
+## persistent env variables
+ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
+
+# source binaries
+RUN echo "source /opt/xbot/setup.sh" >> ~/.bashrc
+
+# init forest ws, add recipes with configurable tag
+RUN mkdir xbot2_ws && \
+    cd xbot2_ws && \ 
+    forest init && \
+    forest add-recipes $RECIPES_REPO -t $RECIPES_TAG && \
+    echo "source $PWD/setup.bash" >> ~/.bashrc
+
+# core packages that should be available for most robots
+RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
+    cd xbot2_ws && \
+    forest grow \ 
+        xbot2_gui_server \
+        xbot2_tools \
+        cartesio_collision_support \
+        centauro_cartesio \
+        xbot2_cli \
+        xbot2_ros \
+        concert_launcher \
+        vectornav \
+        -j $FOREST_NJOBS --verbose && \
+    forest freeze --append && \
+    rm -rf build
+    

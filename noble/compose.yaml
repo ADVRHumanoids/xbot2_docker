@@ -1,21 +1,22 @@
 services:
   dev:
-    build: 
-      context: .
-      args:
-        - USER_ID
+    image: hhcmhub/xbot2-noble-dev:latest
     stdin_open: true
     tty: true 
     privileged: true
     entrypoint: /bin/bash
     restart: always
+    network_mode: host
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw  # x11
       - ~/.ssh:/home/user/.ssh  # ssh
-      - ~/Qt:/home/user/Qt  # qt
-      - ./data:/home/user/data:rw  # persistent data folder
+      - ./workspace:/home/user/workspace:rw  # persistent data folder
     environment:
       - TERM=xterm-256color
+
+  dev-nvidia:
+    extends: dev
+    environment:
       - DISPLAY
       - NVIDIA_DRIVER_CAPABILITIES=all
     deploy:
@@ -25,6 +26,19 @@ services:
             - driver: nvidia
               count: 1
               capabilities: [gpu]
+
+  robot:
+    extends: dev
+    image: hhcmhub/xbot2-noble-robot:latest
+  
+  robot-nvidia:
+    extends: dev-nvidia
+    image: hhcmhub/xbot2-noble-robot:latest
+
+  rt:
+    extends: dev
+    image: hhcmhub/xbot2-noble-rt:latest
+
   
 
 

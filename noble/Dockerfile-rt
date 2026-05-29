@@ -1,0 +1,37 @@
+FROM hhcmhub/xbot2-noble-robot
+
+## configuration
+ARG RECIPES_REPO
+ARG RECIPES_TAG
+ARG FOREST_NJOBS=1
+ARG KERNEL_VER
+ARG USER_ID
+
+# remove xbot2, install dependencies for building xenomai and the client
+RUN sudo apt update && \ 
+    sudo apt remove -y xbot2 && \ 
+    sudo apt install -y libtool pkg-config && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+
+# build xenomai
+# note: we reset the git state for forest freeze
+RUN cd xbot2_ws && \ 
+    forest grow Xenomai -j $FOREST_NJOBS --clone-depth 1 -v -m linuxv$KERNEL_VER  && \
+    (cd src/Xenomai && git reset --hard) && \ 
+    forest freeze --append && \
+    rm -rf build src/Xenomai
+
+# xenomai from regular user
+RUN sudo groupadd -f xenomai -g 1001 && sudo usermod -a -G xenomai user
+
+# tag overrides
+RUN (echo "xbot2: ros2-devel" >> ~/xbot2_ws/tag_overrides.yaml) && \
+    (echo "ecat_master: main_hhcm" >> ~/xbot2_ws/tag_overrides.yaml)
+
+# build rt-specific packages
+RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
+    cd xbot2_ws && forest grow  \ 
+        ec_xbot2_client_v2 \
+        -j $FOREST_NJOBS --verbose -m xeno --clone-depth 1 --tag-override tag_overrides.yaml && \
+    forest freeze --append && \
+    rm -rf build src/ecat_master src/xbot2

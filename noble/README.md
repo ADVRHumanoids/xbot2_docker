@@ -1,10 +1,10 @@
 # Usage
 
 ## Build the container
+Example:
 ```bash
-USER_ID=$(id -u) docker compose build
+./build.bash --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git --user-id 1000 --recipes-tag ros2 --forest-njobs 8 --netrc ~/.netrc 
 ```
-If your user id is 1000 (very common), you can drop the first part.
 
 ## Start the container
 ```bash
