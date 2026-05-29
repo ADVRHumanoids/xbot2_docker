@@ -30,6 +30,10 @@ variable "TAG" {
   default = "latest"
 }
 
+variable "KERNEL_VER" {
+  default = ""
+}
+
 # ----- Targets -----
 
 group "default" {
@@ -76,6 +80,7 @@ target "rt" {
     RECIPES_TAG  = RECIPES_TAG
     FOREST_NJOBS = FOREST_NJOBS
     USER_ID = USER_ID
+    KERNEL_VER = KERNEL_VER
   }
   secret = NETRC_FILE != "" ? ["id=netrc,src=${NETRC_FILE}"] : []
   tags   = ["hhcmhub/xbot2-noble-rt:${TAG}"]
