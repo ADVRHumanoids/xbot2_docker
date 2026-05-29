@@ -7,6 +7,12 @@ ARG FOREST_NJOBS=1
 ARG KERNEL_VER
 ARG USER_ID
 
+# check args not empty
+RUN if [ -z "$USER_ID" ]; then echo "USER_ID argument is required"; exit 1; fi
+RUN if [ -z "$RECIPES_REPO" ]; then echo "RECIPES_REPO argument is required"; exit 1; fi
+RUN if [ -z "$RECIPES_TAG" ]; then echo "RECIPES_TAG argument is required"; exit 1; fi
+RUN if [ -z "$KERNEL_VER" ]; then echo "KERNEL_VER argument is required"; exit 1; fi
+
 # remove xbot2, install dependencies for building xenomai and the client
 RUN sudo apt update && \ 
     sudo apt remove -y xbot2 && \ 

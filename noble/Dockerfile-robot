@@ -7,6 +7,11 @@ ARG RECIPES_TAG
 ARG FOREST_NJOBS=1
 ARG USER_ID
 
+# check args not empty
+RUN if [ -z "$USER_ID" ]; then echo "USER_ID argument is required"; exit 1; fi
+RUN if [ -z "$RECIPES_REPO" ]; then echo "RECIPES_REPO argument is required"; exit 1; fi
+RUN if [ -z "$RECIPES_TAG" ]; then echo "RECIPES_TAG argument is required"; exit 1; fi
+
 ## persistent env variables
 ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
 

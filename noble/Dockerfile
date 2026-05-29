@@ -2,6 +2,9 @@ FROM ros:jazzy-perception-noble
 
 ARG USER_ID
 
+# check args not empty
+RUN if [ -z "$USER_ID" ]; then echo "USER_ID argument is required"; exit 1; fi
+
 # delete ubuntu user
 RUN sudo userdel ubuntu
 
