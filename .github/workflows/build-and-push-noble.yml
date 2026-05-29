@@ -32,7 +32,7 @@ jobs:
 
       - name: Create netrc file for private repo access
         run: |
-          echo "machine github.com login ${{ secrets.GITHUB_ORG_USERNAME }} password ${{ secrets.GITHUB_ORG_TOKEN }}" > ~/.netrc
+          echo "machine github.com login ${{ secrets.GH_ORG_USERNAME }} password ${{ secrets.GH_ORG_TOKEN }}" > ~/.netrc
           chmod 600 ~/.netrc
 
       - name: Run build.bash
@@ -42,7 +42,7 @@ jobs:
           
           export BUILDX_BAKE_ENTITLEMENTS_FS=0 
 
-          ./build.bash 
+          ./noble/build.bash 
             --user-id 1000
             --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git 
             --recipes-tag ros2 
