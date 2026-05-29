@@ -67,7 +67,7 @@ if [[ -n "$SNAPSHOT" && "$TAG" == "latest" ]]; then
     TAG="$SNAPSHOT_NAME"
 fi
 
-docker buildx bake -f docker-bake.hcl --load $NO_CACHE
+docker buildx bake --allow=fs.read=$(realpath "$NETRC_FILE") -f docker-bake.hcl --load $NO_CACHE
 
 if [[ -n "$SNAPSHOT" ]]; then
     "$DIR/snapshot.bash" --tag "$TAG" --name "$SNAPSHOT_NAME"
