@@ -1,3 +1,4 @@
+[![Build and Push (xbot2_docker-noble-ROS2)](https://github.com/ADVRHumanoids/xbot2_docker/actions/workflows/build-and-push-noble.yml/badge.svg)](https://github.com/ADVRHumanoids/xbot2_docker/actions/workflows/build-and-push-noble.yml)
 # XBot2 Docker - Robot Template Build System
 
 This directory provides a generalized, reusable Docker build system for XBot2-based robots. It supports multiple ROS versions and different deployment configurations through a flexible, parameterized approach.
