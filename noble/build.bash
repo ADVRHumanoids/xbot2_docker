@@ -10,6 +10,7 @@ RECIPES_TAG=""
 FOREST_NJOBS="1"
 NETRC_FILE=""
 TAG="latest"
+KERNEL_VER=""
 NO_CACHE=""
 SNAPSHOT=""
 SNAPSHOT_NAME="$(date +%Y%m%d%H%M)"
@@ -28,6 +29,7 @@ Options:
   --forest-njobs N     Parallel jobs for forest grow          (default: 1)
   --netrc        PATH  Path to a .netrc file for private git clones (build secret)
   --tag          TAG   Docker image tag applied to all three images (default: latest)
+  --kernel-ver   VER   Kernel version passed to Dockerfile-rt as KERNEL_VER
   --no-cache           Pass --no-cache to docker buildx bake
   --snapshot           Run snapshot.bash after a successful build
   --snapshot-name NAME Build name subfolder for the snapshot (default: YYYYMMDDHHmm)
@@ -44,6 +46,7 @@ while [[ $# -gt 0 ]]; do
         --forest-njobs) FOREST_NJOBS="$2"; shift 2 ;;
         --netrc)        NETRC_FILE="$2";   shift 2 ;;
         --tag)          TAG="$2";          shift 2 ;;
+        --kernel-ver)   KERNEL_VER="$2";   shift 2 ;;
         --no-cache)     NO_CACHE="--no-cache"; shift ;;
         --snapshot)     SNAPSHOT="1"; shift ;;
         --snapshot-name) SNAPSHOT_NAME="$2"; shift 2 ;;
@@ -59,6 +62,7 @@ export RECIPES_TAG
 export FOREST_NJOBS
 export NETRC_FILE
 export TAG
+export KERNEL_VER
 
 cd "$DIR"
 
