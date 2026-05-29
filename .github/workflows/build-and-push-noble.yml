@@ -38,7 +38,8 @@ jobs:
       - name: Run build.bash
         run: |
 
-          echo "SNAPSHOT_NAME=noble-ros2-$(date +%Y%m%d%H%M%S)" >> "$GITHUB_ENV"
+          SNAPSHOT_NAME="noble-ros2-$(date +%Y%m%d%H%M%S)"
+          echo "SNAPSHOT_NAME=$SNAPSHOT_NAME" >> "$GITHUB_ENV"
           
           export BUILDX_BAKE_ENTITLEMENTS_FS=0 
 
