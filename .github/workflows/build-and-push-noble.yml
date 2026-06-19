@@ -63,12 +63,34 @@ jobs:
         run: tar -czf snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz -C noble/snapshots ${{ env.SNAPSHOT_NAME }}
         if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
 
+      - name: Find previous snapshot URL
+        id: prev_snapshot
+        run: |
+          URL=$(gh api "repos/${{ github.repository }}/releases" \
+            --jq 'map(select(.tag_name | startswith("noble-ros2-linuxv5-"))) | first | .assets[] | select(.name | startswith("snapshot-")) | .browser_download_url' \
+            2>/dev/null || true)
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
+
+      - name: Compute release diff
+        run: |
+          PREV="${{ steps.prev_snapshot.outputs.url }}"
+          if [[ -n "$PREV" ]]; then
+            python noble/compute_release_diff.py "$PREV" "snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz" > release-notes.txt || true
+          else
+            echo "First snapshot – no previous release to diff against." > release-notes.txt
+          fi
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
+
       - name: Upload snapshot to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.SNAPSHOT_NAME }}
           name: ${{ env.SNAPSHOT_NAME }}
           files: snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz
+          body_path: release-notes.txt
         if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
 
       - name: Commit snapshot to snapshots branch
