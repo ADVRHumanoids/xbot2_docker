@@ -91,7 +91,7 @@ jobs:
           name: ${{ env.SNAPSHOT_NAME }}
           files: snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz
           body_path: release-notes.txt
-        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v')
 
       - name: Commit snapshot to snapshots branch
         run: |
@@ -108,4 +108,4 @@ jobs:
           git add ${{ env.SNAPSHOT_NAME }}
           git commit -m "snapshot ${{ env.SNAPSHOT_NAME }}"
           git push origin snapshots
-        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build noble]')
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v')
