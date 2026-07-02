@@ -31,7 +31,8 @@ RUN cd xbot2_ws && \
 RUN sudo groupadd -f xenomai -g 1001 && sudo usermod -a -G xenomai user
 
 # tag overrides
-RUN (echo "ecat_master: main_hhcm" >> ~/xbot2_ws/tag_overrides.yaml)
+RUN (echo "xbot2: ros2-devel" >> ~/xbot2_ws/tag_overrides.yaml) && \
+    (echo "ecat_master: main_hhcm" >> ~/xbot2_ws/tag_overrides.yaml)
 
 # build rt-specific packages
 RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
