@@ -24,6 +24,9 @@ ENV DEBIAN_FRONTEND=noninteractive
 # otherwise autocompletion is broken with apt
 RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 
+# upgrade all packages
+RUN sudo apt-get update && sudo apt-get upgrade -y
+
 # add xbot2 source and keys
 RUN sudo apt-get update && sudo apt-get install -y wget gnupg && \
     sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list' && \
