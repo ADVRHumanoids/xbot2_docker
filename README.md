@@ -20,7 +20,7 @@ xbot2_docker/
 ## Quick Start
 
 > [!NOTE]
-> All the following commands are meant to be executed in the repo root directory or subfolder when specified by previous `cd` commands
+> All the following commands are meant to be executed in each subfolder, as pointed aout from the `cd` command in the example.
 
 There are two ways to use XBot2 Docker images:
 

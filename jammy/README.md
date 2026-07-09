@@ -4,6 +4,9 @@ This folder contains Docker configurations for XBot2 on Ubuntu 22.04 Jammy with 
 
 ## Quick Start
 
+> [!NOTE]
+> All the following commands are meant to be executed in this folder.
+
 ### Option 1: Pull Pre-built Images (Recommended)
 
 If you **don't have access** to the xbot2 GitHub repositories, you can pull and use pre-built images:
