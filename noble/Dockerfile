@@ -28,9 +28,9 @@ RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
 # add xbot2 source and keys
-RUN sudo apt-get update && sudo apt-get install -y wget gnupg && \
-    sudo sh -c 'echo "deb http://xbot.cloud/xbot2-nightly/ubuntu/noble /" > /etc/apt/sources.list.d/xbot.list' && \
-    wget -q -O - http://xbot.cloud/xbot2/ubuntu/KEY.gpg | sudo apt-key add - && \
+RUN sudo apt-get update && sudo apt-get install -y wget gnupg curl gnupg2 ca-certificates lsb-release && \
+    sudo sh -c 'echo "deb https://advrhumanoids.github.io/XBotBuild/ubuntu/noble ./" > /etc/apt/sources.list.d/xbot.list' && \
+    curl -fsSL https://advrhumanoids.github.io/XBotBuild/KEY.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/xbot2.gpg && \
     sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
 # go full ros2
