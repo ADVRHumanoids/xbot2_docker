@@ -35,10 +35,14 @@ services:
     extends: dev-nvidia
     image: hhcmhub/xbot2-noble-robot:latest
 
-  rt:
+  rt-v5:
     extends: dev
-    image: hhcmhub/xbot2-noble-rt:latest
+    image: hhcmhub/xbot2-noble-rt-v5:latest
 
-  
+  rt-v6:
+    extends: dev
+    image: hhcmhub/xbot2-noble-rt-v6:latest
 
+  rt:
+    extends: rt-v6
 

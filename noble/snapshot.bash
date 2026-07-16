@@ -12,8 +12,8 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Extract software version snapshots from the three built xbot2 noble images.
-Snapshots are saved under snapshots/<BUILD_NAME>/{base,robot,rt}/.
+Extract software version snapshots from the built xbot2 noble images.
+Snapshots are saved under snapshots/<BUILD_NAME>/{base,robot,rt-v5,rt-v6}/.
 
 Options:
   --tag         TAG   Docker image tag to snapshot (default: latest)
@@ -83,10 +83,12 @@ extract_image() {
 # ----- Extract from each image -----
 extract_image "hhcmhub/xbot2-noble-dev:${TAG}"   "$SNAPSHOT_DIR/base"  0
 extract_image "hhcmhub/xbot2-noble-robot:${TAG}"  "$SNAPSHOT_DIR/robot" 1
-extract_image "hhcmhub/xbot2-noble-rt:${TAG}"     "$SNAPSHOT_DIR/rt"    1
+extract_image "hhcmhub/xbot2-noble-rt-v5:${TAG}"  "$SNAPSHOT_DIR/rt-v5" 1
+extract_image "hhcmhub/xbot2-noble-rt-v6:${TAG}"  "$SNAPSHOT_DIR/rt-v6" 1
 
 echo ""
 echo "Snapshot complete: $SNAPSHOT_DIR"
 echo "  base/  image-digest.txt  apt-sources.txt  apt.txt  pip.txt"
 echo "  robot/ image-digest.txt  apt-sources.txt  apt.txt  pip.txt  forest.lock"
-echo "  rt/    image-digest.txt  apt-sources.txt  apt.txt  pip.txt  forest.lock"
+echo "  rt-v5/ image-digest.txt  apt-sources.txt  apt.txt  pip.txt  forest.lock"
+echo "  rt-v6/ image-digest.txt  apt-sources.txt  apt.txt  pip.txt  forest.lock"

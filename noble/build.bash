@@ -9,9 +9,9 @@ RECIPES_REPO=""
 RECIPES_TAG=""
 FOREST_NJOBS="1"
 NETRC_FILE=""
-TAG="latest"
-KERNEL_VER=""
+TAG="${TAG:-${GITHUB_REF_NAME:-latest}}"
 NO_CACHE=""
+PUSH=""
 SNAPSHOT=""
 SNAPSHOT_NAME="$(date +%Y%m%d%H%M)"
 
@@ -20,7 +20,7 @@ usage() {
     cat <<EOF
 Usage: $(basename "$0") [OPTIONS]
 
-Build the xbot2 noble Docker images (base -> robot -> rt) using docker buildx bake.
+Build the xbot2 noble Docker images (base -> robot -> rt-v5/rt-v6) using docker buildx bake.
 
 Options:
   --user-id      ID    UID for the 'user' account inside the container (default: current user)
@@ -28,9 +28,9 @@ Options:
   --recipes-tag  TAG   Forest recipes git tag/branch          [required for robot/rt]
   --forest-njobs N     Parallel jobs for forest grow          (default: 1)
   --netrc        PATH  Path to a .netrc file for private git clones (build secret)
-  --tag          TAG   Docker image tag applied to all three images (default: latest)
-  --kernel-ver   VER   Kernel version passed to Dockerfile-rt as KERNEL_VER
+  --tag          TAG   Docker image tag applied to all images (default: TAG, GITHUB_REF_NAME, or latest)
   --no-cache           Pass --no-cache to docker buildx bake
+  --push               Push images to the registry instead of only loading them locally
   --snapshot           Run snapshot.bash after a successful build
   --snapshot-name NAME Build name subfolder for the snapshot (default: YYYYMMDDHHmm)
   -h, --help           Show this help message
@@ -46,8 +46,8 @@ while [[ $# -gt 0 ]]; do
         --forest-njobs) FOREST_NJOBS="$2"; shift 2 ;;
         --netrc)        NETRC_FILE="$2";   shift 2 ;;
         --tag)          TAG="$2";          shift 2 ;;
-        --kernel-ver)   KERNEL_VER="$2";   shift 2 ;;
         --no-cache)     NO_CACHE="--no-cache"; shift ;;
+        --push)         PUSH="1"; shift ;;
         --snapshot)     SNAPSHOT="1"; shift ;;
         --snapshot-name) SNAPSHOT_NAME="$2"; shift 2 ;;
         -h|--help)      usage; exit 0 ;;
@@ -62,7 +62,6 @@ export RECIPES_TAG
 export FOREST_NJOBS
 export NETRC_FILE
 export TAG
-export KERNEL_VER
 
 cd "$DIR"
 
@@ -71,8 +70,30 @@ if [[ -n "$SNAPSHOT" && "$TAG" == "latest" ]]; then
     TAG="$SNAPSHOT_NAME"
 fi
 
-docker buildx bake --allow=fs.read=$(realpath "$NETRC_FILE") -f docker-bake.hcl --load $NO_CACHE
+BAKE_ARGS=(-f docker-bake.hcl)
+if [[ -n "$NETRC_FILE" ]]; then
+    BAKE_ARGS=(--allow=fs.read="$(realpath "$NETRC_FILE")" "${BAKE_ARGS[@]}")
+fi
+NO_CACHE_ARGS=()
+if [[ -n "$NO_CACHE" ]]; then
+    NO_CACHE_ARGS+=("$NO_CACHE")
+fi
 
 if [[ -n "$SNAPSHOT" ]]; then
+    echo "Building images locally with tag: $TAG"
+    docker buildx bake "${BAKE_ARGS[@]}" "${NO_CACHE_ARGS[@]}" --load rt
+
     "$DIR/snapshot.bash" --tag "$TAG" --name "$SNAPSHOT_NAME"
+fi
+
+if [[ -n "$PUSH" ]]; then
+    echo "Building and pushing images with tag: $TAG"
+    PUSH_NO_CACHE_ARGS=()
+    if [[ -z "$SNAPSHOT" ]]; then
+        PUSH_NO_CACHE_ARGS=("${NO_CACHE_ARGS[@]}")
+    fi
+    docker buildx bake "${BAKE_ARGS[@]}" "${PUSH_NO_CACHE_ARGS[@]}" --push rt
+elif [[ -z "$SNAPSHOT" ]]; then
+    echo "Building images locally with tag: $TAG"
+    docker buildx bake "${BAKE_ARGS[@]}" "${NO_CACHE_ARGS[@]}" --load rt
 fi

@@ -30,14 +30,14 @@ variable "TAG" {
   default = "latest"
 }
 
-variable "KERNEL_VER" {
-  default = ""
-}
-
 # ----- Targets -----
 
 group "default" {
-  targets = ["base", "robot", "rt"]
+  targets = ["base", "robot", "rt-v5", "rt-v6"]
+}
+
+group "rt" {
+  targets = ["base", "robot", "rt-v5", "rt-v6"]
 }
 
 target "base" {
@@ -46,7 +46,7 @@ target "base" {
   args = {
     USER_ID = USER_ID
   }
-  tags = ["hhcmhub/xbot2-noble-dev:${TAG}"]
+  tags = TAG != "latest" ? ["hhcmhub/xbot2-noble-dev:${TAG}", "hhcmhub/xbot2-noble-dev:latest"] : ["hhcmhub/xbot2-noble-dev:latest"]
 }
 
 target "robot" {
@@ -64,10 +64,10 @@ target "robot" {
     USER_ID = USER_ID
   }
   secret = NETRC_FILE != "" ? ["id=netrc,src=${NETRC_FILE}"] : []
-  tags   = ["hhcmhub/xbot2-noble-robot:${TAG}"]
+  tags   = TAG != "latest" ? ["hhcmhub/xbot2-noble-robot:${TAG}", "hhcmhub/xbot2-noble-robot:latest"] : ["hhcmhub/xbot2-noble-robot:latest"]
 }
 
-target "rt" {
+target "rt-common" {
   dockerfile = "Dockerfile-rt"
   context    = "."
   depends_on = ["robot"]
@@ -80,8 +80,22 @@ target "rt" {
     RECIPES_TAG  = RECIPES_TAG
     FOREST_NJOBS = FOREST_NJOBS
     USER_ID = USER_ID
-    KERNEL_VER = KERNEL_VER
   }
   secret = NETRC_FILE != "" ? ["id=netrc,src=${NETRC_FILE}"] : []
-  tags   = ["hhcmhub/xbot2-noble-rt:${TAG}"]
+}
+
+target "rt-v5" {
+  inherits = ["rt-common"]
+  args = {
+    KERNEL_VER = "5"
+  }
+  tags = TAG != "latest" ? ["hhcmhub/xbot2-noble-rt-v5:${TAG}", "hhcmhub/xbot2-noble-rt-v5:latest"] : ["hhcmhub/xbot2-noble-rt-v5:latest"]
+}
+
+target "rt-v6" {
+  inherits = ["rt-common"]
+  args = {
+    KERNEL_VER = "6"
+  }
+  tags = TAG != "latest" ? ["hhcmhub/xbot2-noble-rt-v6:${TAG}", "hhcmhub/xbot2-noble-rt-v6:latest"] : ["hhcmhub/xbot2-noble-rt-v6:latest"]
 }
