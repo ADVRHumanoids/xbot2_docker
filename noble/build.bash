@@ -72,28 +72,51 @@ fi
 
 BAKE_ARGS=(-f docker-bake.hcl)
 if [[ -n "$NETRC_FILE" ]]; then
-    BAKE_ARGS=(--allow=fs.read="$(realpath "$NETRC_FILE")" "${BAKE_ARGS[@]}")
+    # Filesystem entitlements were added to `buildx bake` in Buildx v0.19.
+    # Older releases can still read a local secret source, but reject --allow.
+    BUILDX_VERSION="$(docker buildx version 2>/dev/null || true)"
+    if [[ "$BUILDX_VERSION" =~ v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+        BUILDX_MAJOR="${BASH_REMATCH[1]}"
+        BUILDX_MINOR="${BASH_REMATCH[2]}"
+        if (( BUILDX_MAJOR > 0 || BUILDX_MINOR >= 19 )); then
+            BAKE_ARGS=(--allow=fs.read="$(realpath "$NETRC_FILE")" "${BAKE_ARGS[@]}")
+        fi
+    fi
 fi
 NO_CACHE_ARGS=()
 if [[ -n "$NO_CACHE" ]]; then
     NO_CACHE_ARGS+=("$NO_CACHE")
 fi
 
+run_image_tests() {
+    echo "Running image tests"
+    bash "$DIR/test_image.bash"
+}
+
 if [[ -n "$SNAPSHOT" ]]; then
     echo "Building images locally with tag: $TAG"
     docker buildx bake "${BAKE_ARGS[@]}" "${NO_CACHE_ARGS[@]}" --load rt
+
+    run_image_tests
 
     "$DIR/snapshot.bash" --tag "$TAG" --name "$SNAPSHOT_NAME"
 fi
 
 if [[ -n "$PUSH" ]]; then
-    echo "Building and pushing images with tag: $TAG"
-    PUSH_NO_CACHE_ARGS=()
+    # Build and test the local images before publishing anything to the registry.
     if [[ -z "$SNAPSHOT" ]]; then
-        PUSH_NO_CACHE_ARGS=("${NO_CACHE_ARGS[@]}")
+        echo "Building images locally with tag: $TAG"
+        docker buildx bake "${BAKE_ARGS[@]}" "${NO_CACHE_ARGS[@]}" --load rt
+
+        run_image_tests
     fi
-    docker buildx bake "${BAKE_ARGS[@]}" "${PUSH_NO_CACHE_ARGS[@]}" --push rt
+
+    echo "Building and pushing images with tag: $TAG"
+    # Reuse the cache populated by the local build that just passed the tests.
+    docker buildx bake "${BAKE_ARGS[@]}" --push rt
 elif [[ -z "$SNAPSHOT" ]]; then
     echo "Building images locally with tag: $TAG"
     docker buildx bake "${BAKE_ARGS[@]}" "${NO_CACHE_ARGS[@]}" --load rt
+
+    run_image_tests
 fi
