@@ -29,6 +29,7 @@ RUN mkdir xbot2_ws && \
 RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
     cd xbot2_ws && \
     forest grow \ 
+        xbot2_diagnostics \
         xbot2_gui_server \
         xbot2_tools \
         cartesio_collision_support \
@@ -37,6 +38,8 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
         xbot2_ros \
         concert_launcher \
         vectornav \
+        hesai_ros_driver \
+        network_bridge \
         -j $FOREST_NJOBS --verbose && \
     forest freeze --append && \
     rm -rf build
