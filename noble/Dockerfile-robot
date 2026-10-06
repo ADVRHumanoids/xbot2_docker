@@ -27,6 +27,7 @@ RUN mkdir xbot2_ws && \
 
 # core packages that should be available for most robots
 RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
+    sudo apt update && \
     cd xbot2_ws && \
     forest grow \ 
         xbot2_diagnostics \
@@ -42,5 +43,6 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
         network_bridge \
         -j $FOREST_NJOBS --verbose && \
     forest freeze --append && \
-    rm -rf build
+    rm -rf build && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
     
