@@ -25,6 +25,10 @@ RUN mkdir xbot2_ws && \
     forest add-recipes $RECIPES_REPO -t $RECIPES_TAG && \
     echo "source $PWD/setup.bash" >> ~/.bashrc
 
+# Use the same Resolute-specific source overrides as XBotBuild.
+COPY --chown=user:user resolute-tag-overrides.yaml /home/user/xbot2_ws/tag_overrides.yaml
+COPY --chown=user:user freeze-with-recipe-patches.bash /home/user/xbot2_ws/freeze-with-recipe-patches.bash
+
 # core packages that should be available for most robots
 RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
     cd xbot2_ws && \
@@ -37,7 +41,7 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
         xbot2_ros \
         concert_launcher \
         vectornav \
-        -j $FOREST_NJOBS --verbose && \
-    forest freeze --append && \
+        -j $FOREST_NJOBS --verbose --tag-override tag_overrides.yaml && \
+    bash ./freeze-with-recipe-patches.bash && \
     rm -rf build
     

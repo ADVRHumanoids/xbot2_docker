@@ -8,6 +8,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
     branches:
       - master
+      - fix/resolute-forest-tag-overrides # temporary CI verification of PR #4
 
 jobs:
   build-and-push:
@@ -55,6 +56,7 @@ jobs:
 
           ./resolute/build.bash \
             --user-id 1000 \
+            --tag "$(echo "${GITHUB_REF_NAME:-latest}" | tr '/' '-')" \
             --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git \
             --recipes-tag ros2 \
             --forest-njobs 4 \
