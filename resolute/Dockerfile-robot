@@ -27,6 +27,7 @@ RUN mkdir xbot2_ws && \
 
 # Use the same Resolute-specific source overrides as XBotBuild.
 COPY --chown=user:user resolute-tag-overrides.yaml /home/user/xbot2_ws/tag_overrides.yaml
+COPY --chown=user:user freeze-with-recipe-patches.bash /home/user/xbot2_ws/freeze-with-recipe-patches.bash
 
 # core packages that should be available for most robots
 RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
@@ -41,6 +42,6 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
         concert_launcher \
         vectornav \
         -j $FOREST_NJOBS --verbose --tag-override tag_overrides.yaml && \
-    forest freeze --append && \
+    bash ./freeze-with-recipe-patches.bash && \
     rm -rf build
     
