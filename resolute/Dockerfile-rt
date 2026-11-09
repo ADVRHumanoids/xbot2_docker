@@ -24,7 +24,7 @@ RUN sudo apt update && \
 RUN cd xbot2_ws && \ 
     forest grow Xenomai -j $FOREST_NJOBS --clone-depth 1 -v -m linuxv$KERNEL_VER --tag-override tag_overrides.yaml && \
     (cd src/Xenomai && git reset --hard) && \ 
-    forest freeze --append && \
+    bash ./freeze-with-recipe-patches.bash && \
     rm -rf build src/Xenomai
 
 # xenomai from regular user
@@ -38,5 +38,5 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
     cd xbot2_ws && forest grow  \ 
         ec_xbot2_client_v2 \
         -j $FOREST_NJOBS --verbose -m xeno --clone-depth 1 --tag-override tag_overrides.yaml && \
-    forest freeze --append && \
+    bash ./freeze-with-recipe-patches.bash && \
     rm -rf build src/ecat_master src/xbot2
