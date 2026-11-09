@@ -1,0 +1,117 @@
+name: Build and Push (xbot2_docker-resolute-ROS2)
+
+on:
+  schedule:
+    - cron: '0 0 1 * *'  # Run on the first day of every month at midnight
+  push:
+    tags:
+      - 'v[0-9]+.[0-9]+.[0-9]+'
+    branches:
+      - master
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Get commit message
+        run: |
+          COMMIT_MSG="$(git log -1 --pretty=%B)"
+          {
+            echo 'COMMIT_MESSAGE<<EOF'
+            echo "$COMMIT_MSG"
+            echo 'EOF'
+          } >> "$GITHUB_ENV"
+
+      - name: Log in to Docker Hub
+        run: |
+          echo "${{ secrets.DOCKERHUB_TOKEN }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      - name: Create netrc file for private repo access
+        run: |
+          echo "machine github.com login ${{ secrets.GH_ORG_USERNAME }} password ${{ secrets.GH_ORG_TOKEN }}" > ~/.netrc
+          chmod 600 ~/.netrc
+
+      - name: Run build.bash
+        run: |
+
+          if [[ -n "$GITHUB_REF" ]]; then
+            REF_SLUG="$(echo "$GITHUB_REF" | sed 's|refs/[^/]*/||' | sed 's|/|-|g')"
+            SNAPSHOT_NAME="resolute-ros2-${REF_SLUG}"
+          else
+            SNAPSHOT_NAME="resolute-ros2-$(date +%Y%m%d%H%M%S)"
+          fi
+          echo "SNAPSHOT_NAME=$SNAPSHOT_NAME" >> "$GITHUB_ENV"
+
+          PUSH_ARG=""
+          if [[ "$GITHUB_EVENT_NAME" == "schedule" || "$GITHUB_REF" == refs/tags/v* ]]; then
+            PUSH_ARG="--push"
+          fi
+          
+          export BUILDX_BAKE_ENTITLEMENTS_FS=0 
+
+          ./resolute/build.bash \
+            --user-id 1000 \
+            --recipes-repo https://github.com/advrhumanoids/multidof_recipes.git \
+            --recipes-tag ros2 \
+            --forest-njobs 4 \
+            --netrc ~/.netrc \
+            --no-cache \
+            $PUSH_ARG \
+            --snapshot \
+            --snapshot-name "$SNAPSHOT_NAME" 
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build resolute]')
+
+      - name: Archive snapshot
+        run: tar -czf snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz -C resolute/snapshots ${{ env.SNAPSHOT_NAME }}
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build resolute]')
+
+      - name: Find previous snapshot URL
+        id: prev_snapshot
+        run: |
+          URL=$(gh api "repos/${{ github.repository }}/releases" \
+            --jq 'map(select(.tag_name | startswith("resolute-ros2-"))) | first | .assets[] | select(.name | startswith("snapshot-")) | .browser_download_url' \
+            2>/dev/null || true)
+          echo "url=${URL}" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build resolute]')
+
+      - name: Compute release diff
+        run: |
+          PREV="${{ steps.prev_snapshot.outputs.url }}"
+          if [[ -n "$PREV" ]]; then
+            python resolute/compute_release_diff.py "$PREV" "snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz" > release-notes.txt || true
+          else
+            echo "First snapshot – no previous release to diff against." > release-notes.txt
+          fi
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v') || contains(env.COMMIT_MESSAGE, '[build resolute]')
+
+      - name: Upload snapshot to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.SNAPSHOT_NAME }}
+          name: ${{ env.SNAPSHOT_NAME }}
+          files: snapshot-${{ env.SNAPSHOT_NAME }}.tar.gz
+          body_path: release-notes.txt
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v')
+
+      - name: Commit snapshot to snapshots branch
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git fetch origin snapshots:snapshots 2>/dev/null; then
+            git checkout snapshots
+          else
+            git checkout --orphan snapshots
+            git rm -rf . --quiet
+            git checkout HEAD -- .gitignore 2>/dev/null || true
+          fi
+          cp -r resolute/snapshots/${{ env.SNAPSHOT_NAME }} ${{ env.SNAPSHOT_NAME }}
+          git add ${{ env.SNAPSHOT_NAME }}
+          git commit -m "snapshot ${{ env.SNAPSHOT_NAME }}"
+          git push origin snapshots
+        if: github.event_name == 'schedule' || startsWith(github.ref, 'refs/tags/v')
