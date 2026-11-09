@@ -8,6 +8,7 @@ on:
       - 'v[0-9]+.[0-9]+.[0-9]+'
     branches:
       - master
+      - fix/resolute-forest-tag-overrides # temporary CI verification of PR #4
 
 jobs:
   build-and-push:
