@@ -10,6 +10,7 @@ services:
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix:rw  # x11
       - ~/.ssh:/home/user/.ssh  # ssh
+      - ~/.netrc:/home/user/.netrc:ro
       - ./workspace:/home/user/workspace:rw  # persistent data folder
     environment:
       - TERM=xterm-256color

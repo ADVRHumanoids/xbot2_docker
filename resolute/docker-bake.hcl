@@ -37,7 +37,7 @@ group "default" {
 }
 
 group "rt" {
-  targets = ["base", "robot"]
+  targets = ["base", "robot", "rt-v5", "rt-v6"]
 }
 
 target "base" {

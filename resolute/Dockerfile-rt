@@ -19,6 +19,9 @@ RUN sudo apt update && \
     sudo apt install -y libtool pkg-config && \
     sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
+# pull recipes
+RUN cd xbot2_ws/recipes/multidof_recipes && git fetch && git reset --hard origin/ros2
+
 # build xenomai
 # note: we reset the git state for forest freeze
 RUN cd xbot2_ws && \ 
@@ -31,7 +34,7 @@ RUN cd xbot2_ws && \
 RUN sudo groupadd -f xenomai -g 1001 && sudo usermod -a -G xenomai user
 
 # tag overrides
-RUN (echo "xbot2: ros2-devel" >> ~/xbot2_ws/tag_overrides.yaml) && \
+RUN (echo "xbot2: ros2-devel-resolute-port" >> ~/xbot2_ws/tag_overrides.yaml) && \
     (echo "ecat_master: main_hhcm" >> ~/xbot2_ws/tag_overrides.yaml)
 
 # build rt-specific packages

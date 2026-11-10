@@ -14,6 +14,7 @@ RUN if [ -z "$RECIPES_TAG" ]; then echo "RECIPES_TAG argument is required"; exit
 
 ## persistent env variables
 ENV HHCM_FOREST_CLONE_DEFAULT_PROTO=https
+ARG PYTHONUNBUFFERED=1
 
 # source binaries
 RUN echo "source /opt/xbot/setup.sh" >> ~/.bashrc
@@ -38,6 +39,6 @@ RUN --mount=type=secret,id=netrc,dst=/home/user/.netrc,uid=$USER_ID \
         concert_launcher \
         vectornav \
         -j $FOREST_NJOBS --verbose && \
-    forest freeze --append && \
+    forest freeze --append --ignore-errors && \
     rm -rf build
     

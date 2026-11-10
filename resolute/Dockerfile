@@ -27,11 +27,11 @@ RUN sudo rm /etc/apt/apt.conf.d/docker-clean
 # upgrade all packages
 RUN sudo apt-get update && sudo apt-get upgrade -y
 
-# # add xbot2 source and keys
-# RUN sudo apt-get update && sudo apt-get install -y wget gnupg curl gnupg2 ca-certificates lsb-release && \
-#     sudo sh -c 'echo "deb https://advrhumanoids.github.io/XBotBuild/ubuntu/resolute ./" > /etc/apt/sources.list.d/xbot.list' && \
-#     curl -fsSL https://advrhumanoids.github.io/XBotBuild/KEY.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/xbot2.gpg && \
-#     sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
+# add xbot2 source and keys
+RUN sudo apt-get update && sudo apt-get install -y wget gnupg curl gnupg2 ca-certificates lsb-release && \
+    sudo sh -c 'echo "deb https://advrhumanoids.github.io/XBotBuild/ubuntu/resolute ./" > /etc/apt/sources.list.d/xbot.list' && \
+    curl -fsSL https://advrhumanoids.github.io/XBotBuild/KEY.gpg | sudo gpg --dearmor -o /etc/apt/trusted.gpg.d/xbot2.gpg && \
+    sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
 # go full ros2
 RUN sudo apt-get update && sudo apt-get install -y \
@@ -40,7 +40,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     # ros-$ROS_DISTRO-velodyne \ 
     # ros-$ROS_DISTRO-velodyne-description \
     ros-$ROS_DISTRO-realsense2-description \
-    # ros-$ROS_DISTRO-realsense2-camera \
+    ros-$ROS_DISTRO-realsense2-camera \
     ros-$ROS_DISTRO-tf-transformations \
     ros-$ROS_DISTRO-rmw-cyclonedds-cpp \
     vim  \ 
@@ -59,7 +59,7 @@ RUN sudo apt-get update && sudo apt-get install -y \
     gdb \
     kmod \
     file \
-    # xbot2_desktop_full \
+    xbot2_desktop_full \
     && sudo apt-get clean && sudo rm -rf /var/lib/apt/lists/*
 
 # switch to interactive shell for sourcing ros and venv
