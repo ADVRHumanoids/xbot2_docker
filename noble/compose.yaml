@@ -1,5 +1,6 @@
 services:
   dev:
+    container_name: xbot2-noble-dev
     image: hhcmhub/xbot2-noble-dev:latest
     stdin_open: true
     tty: true 
@@ -15,6 +16,7 @@ services:
       - TERM=xterm-256color
 
   dev-nvidia:
+    container_name: xbot2-noble-dev-nvidia
     extends: dev
     environment:
       - DISPLAY
@@ -28,10 +30,12 @@ services:
               capabilities: [gpu]
 
   robot:
+    container_name: xbot2-noble-robot
     extends: dev
     image: hhcmhub/xbot2-noble-robot:latest
   
   robot-nvidia:
+    container_name: xbot2-noble-robot-nvidia
     extends: dev-nvidia
     image: hhcmhub/xbot2-noble-robot:latest
 
